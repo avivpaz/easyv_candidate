@@ -12,15 +12,12 @@ export async function GET(request, { params }) {
     );
   }
   
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/jobs/${id}`;
+  const baseUrl = process.env.API_URL
+  const url = `${baseUrl}/jobs/${id}`;
   console.log('Fetching URL:', url);
   
   try {
-    const response = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${process.env.API_KEY}`,
-      },
-    });
+    const response = await fetch(url);
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => null);
