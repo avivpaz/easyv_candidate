@@ -25,7 +25,7 @@ export default function JobApplication({ params }) {  // Destructure params
     const fetchJobDetails = async () => {
       try {
         const response = await fetch(`/api/jobs/${jobId}`);
-        if (!response.ok) throw new Error('Job not found');
+        if (!response.ok) throw new Error(response);
         const data = await response.json();
         setJobDetails(data);
         setIsLoading(false);
