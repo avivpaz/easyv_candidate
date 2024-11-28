@@ -25,18 +25,27 @@ export default function JobApplication({ params }) {  // Destructure params
     const fetchJobDetails = async () => {
       try {
         const response = await fetch(`/api/jobs/${jobId}`);
-        if (!response.ok) throw new Error(response);
+        if (!response.ok) {
+          const errorData = await response.text(); // or response.json() if your API returns JSON errors
+          console.log('Response status:', response.status);
+          console.log('Error details:', errorData);
+          throw new Error(errorData);
+        }
         const data = await response.json();
         setJobDetails(data);
         setIsLoading(false);
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Full error:', error);
         router.push('/');
       }
     };
+  
+    if (jobId) {
+      fetchJobDetails();
+    }
+  }, [jobId]);
 
-    fetchJobDetails();
-  }, [jobId,router]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
