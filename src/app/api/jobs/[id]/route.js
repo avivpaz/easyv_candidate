@@ -1,6 +1,3 @@
-// src/app/api/jobs/[id]/route.js
-import { NextResponse } from 'next/server';
-
 export async function GET(request, { params }) {
   const { id } = await params;
   
@@ -8,20 +5,26 @@ export async function GET(request, { params }) {
     const response = await fetch(`${process.env.API_URL}/jobs/${id}`, {
       headers: {
         'Authorization': `Bearer ${process.env.API_KEY}`,
-        // Add any other required headers
       },
     });
 
     if (!response.ok) {
-      throw new Error('Job not found');
+      // First try to get error message from response
+      const errorData = await response.json().catch(() => null);
+      
+      throw new Error(
+        errorData?.message || 
+        `Request failed with status ${response.status}`
+      );
     }
 
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
+    // Return the actual error message
     return NextResponse.json(
-      { error: 'Failed to fetch job details' },
-      { status: 500 }
+      { error: error.message || 'Failed to fetch job details' },
+      { status: !response.ok ? response.status : 500 }
     );
   }
 }
