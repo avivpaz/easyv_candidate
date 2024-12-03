@@ -1,27 +1,22 @@
 import { NextResponse } from 'next/server';
-
 export async function GET(request, { params }) {
-  // Since we're in an async function, we need to await params
-  // But we shouldn't await params directly, instead await the value we need
-  const { id } = await params;  // Await params before destructuring
-
-  if (!id) {
+  const { jobId } =await params;
+  
+  if (!jobId) {
     return NextResponse.json(
-      { error: 'Job ID is required' },
+      { error: 'Job ID are required' },
       { status: 400 }
     );
   }
   
-  const baseUrl = process.env.API_URL
-  const url = `${baseUrl}/jobs/${id}`;
-  console.log('Fetching URL:', url);
+  const baseUrl = process.env.API_URL;
+  const url = `${baseUrl}/public/jobs/${jobId}`;
   
   try {
     const response = await fetch(url);
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => null);
-      console.error('API Error Response:', errorData);
       
       return NextResponse.json(
         { error: errorData?.message || `Request failed with status ${response.status}` },
@@ -33,9 +28,8 @@ export async function GET(request, { params }) {
     return NextResponse.json(data);
   } catch (error) {
     console.error('Fetch Error:', error);
-    
     return NextResponse.json(
-      { error: url },
+      { error: 'Failed to fetch job details' },
       { status: 500 }
     );
   }
