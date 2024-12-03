@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useState, useEffect, use } from 'react';
 import ApiService from '@/app/services/ApiService';
 import { Calendar, MapPin, Briefcase, Search, Globe, Linkedin } from 'lucide-react';
+import LoadingState from '@/app/components/LoadingState';
 
 export default function Home({ params }) {
   const { organizationId } = use(params);
@@ -56,14 +57,7 @@ export default function Home({ params }) {
   );
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="mt-4 text-gray-600">Loading opportunities...</p>
-        </div>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (error) {
@@ -172,9 +166,7 @@ export default function Home({ params }) {
                             {job.description}
                           </p>
                         </div>
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-700 border border-blue-100">
-                          {job.employmentType}
-                        </span>
+                  
                       </div>
 
                       <div className="flex flex-wrap gap-6 text-sm text-gray-500">
@@ -198,18 +190,7 @@ export default function Home({ params }) {
                         )}
                       </div>
 
-                      {job.requiredSkills?.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
-                          {job.requiredSkills.map((skill, index) => (
-                            <span
-                              key={`${job.id}-${skill}-${index}`}
-                              className="px-3 py-1 bg-gray-50 text-gray-600 rounded-full text-sm border border-gray-200"
-                            >
-                              {skill}
-                            </span>
-                          ))}
-                        </div>
-                      )}
+                    
                     </div>
                   </div>
                 </Link>

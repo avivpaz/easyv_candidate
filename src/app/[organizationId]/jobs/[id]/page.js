@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { MapPin, Clock, Briefcase, Calendar, Globe, Linkedin } from 'lucide-react';
 import ApiService from '@/app/services/ApiService';
+import LoadingState from '@/app/components/LoadingState';
 
 export default function JobApplication() {
   const [isLoading, setIsLoading] = useState(true);
@@ -106,21 +107,9 @@ export default function JobApplication() {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white p-8 rounded-lg shadow-sm">
-          <div className="space-y-6">
-            <div className="h-8 w-64 bg-gray-200 rounded animate-pulse"/>
-            <div className="h-4 w-48 bg-gray-200 rounded animate-pulse"/>
-            <div className="space-y-3">
-              <div className="h-4 w-full bg-gray-200 rounded animate-pulse"/>
-              <div className="h-4 w-full bg-gray-200 rounded animate-pulse"/>
-              <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse"/>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    if (isLoading) {
+      return <LoadingState />;
+    }
   }
 
   if (error) {
