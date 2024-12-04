@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { MapPin, Clock, Briefcase, Calendar, Globe, Linkedin } from 'lucide-react';
 import ApiService from '@/app/services/ApiService';
-import LoadingState from '@/app/components/LoadingState';
+import LoadingState from '@/app/components/loadingState';
 import Header from '../../../components/header';
 
 export default function JobApplication() {

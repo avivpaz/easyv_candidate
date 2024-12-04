@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useState, useEffect, use } from 'react';
 import ApiService from '@/app/services/ApiService';
 import { Calendar, MapPin, Briefcase, Search, Globe, Linkedin } from 'lucide-react';
-import LoadingState from '@/app/components/LoadingState';
+import LoadingState from '@/app/components/loadingState';
 import Header from '../components/header';
 export default function Home({ params }) {
   const { organizationId } = use(params);
