@@ -6,10 +6,10 @@ import { useState, useEffect, use } from 'react';
 import ApiService from '@/app/services/ApiService';
 import { Calendar, MapPin, Briefcase, Search, Globe, Linkedin } from 'lucide-react';
 import LoadingState from '@/app/components/LoadingState';
-
+import Header from '../components/header';
 export default function Home({ params }) {
   const { organizationId } = use(params);
-  const [organization, setOrganization] = useState(null);
+  const [organizationDetails, setOrganizationDetails] = useState(null);
   const [jobs, setJobs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -27,7 +27,7 @@ export default function Home({ params }) {
           ApiService.getOrganizationJobs(organizationId)
         ]);
         
-        setOrganization(orgData);
+        setOrganizationDetails(orgData);
         setJobs(jobsData.jobs.filter(job => 
           job.title && job.description && job.location
         ));
@@ -72,70 +72,7 @@ export default function Home({ params }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="flex gap-6 mb-8">
-            {organization?.logoUrl && (
-              <div className="flex-shrink-0">
-                {/* <Image
-                  src={organization.logoUrl}
-                  alt={`${organization.name} logo`}
-                  width={100}
-                  height={100}
-                  className="rounded-lg object-contain"
-                /> */}
-              </div>
-            )}
-            <div className="flex-grow">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900">
-                    {organization?.name}
-                  </h1>
-                  <p className="mt-2 text-gray-600 max-w-3xl">
-                    {organization?.description}
-                  </p>
-                </div>
-                <div className="flex gap-3">
-                  {organization?.website && (
-                    <a
-                      href={organization.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
-                      title="Visit website"
-                    >
-                      <Globe className="w-5 h-5" />
-                    </a>
-                  )}
-                  {organization?.linkedinUrl && (
-                    <a
-                      href={organization.linkedinUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
-                      title="Visit LinkedIn"
-                    >
-                      <Linkedin className="w-5 h-5" />
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search jobs by title, description, or location..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow"
-            />
-          </div>
-        </div>
-      </header>
+      <Header organizationDetails={organizationDetails}></Header>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-4 flex justify-between items-center">

@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { MapPin, Clock, Briefcase, Calendar, Globe, Linkedin } from 'lucide-react';
 import ApiService from '@/app/services/ApiService';
 import LoadingState from '@/app/components/LoadingState';
+import Header from '../../../components/header';
 
 export default function JobApplication() {
   const [isLoading, setIsLoading] = useState(true);
@@ -128,98 +129,70 @@ export default function JobApplication() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            <img 
-              src={organizationDetails?.logoUrl} 
-              alt={organizationDetails?.name}
-              className="h-12 w-12 object-contain"
-            />
-            <h1 className="text-3xl font-bold text-gray-900">{jobDetails?.title}</h1>
-          </div>
-          <div className="flex gap-4">
-            {organizationDetails?.website && (
-              <a href={organizationDetails.website} 
-                 target="_blank" 
-                 rel="noopener noreferrer"
-                 className="text-gray-600 hover:text-blue-600">
-                <Globe className="h-6 w-6" />
-              </a>
-            )}
-            {organizationDetails?.linkedinUrl && (
-              <a href={organizationDetails.linkedinUrl} 
-                 target="_blank" 
-                 rel="noopener noreferrer"
-                 className="text-gray-600 hover:text-blue-600">
-                <Linkedin className="h-6 w-6" />
-              </a>
-            )}
-          </div>
-        </div>
-      </header>
+      <Header organizationDetails={organizationDetails}></Header>
+
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-1">
-            {jobDetails && (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 h-fit sticky top-8">
-                <div className="p-6 space-y-6">
-                  <div className="grid grid-cols-1 gap-3">
-                    <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
-                      <MapPin className="h-4 w-4 text-blue-600"/>
-                      <span className="text-sm text-gray-700">{jobDetails.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
-                      <Clock className="h-4 w-4 text-blue-600"/>
-                      <span className="text-sm text-gray-700">{jobDetails.workType}</span>
-                    </div>
-                    <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
-                      <Briefcase className="h-4 w-4 text-blue-600"/>
-                      <span className="text-sm text-gray-700">{jobDetails.employmentType}</span>
-                    </div>
-                    <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
-                      <Calendar className="h-4 w-4 text-blue-600"/>
-                      <span className="text-sm text-gray-700">Posted {new Date(jobDetails.createdAt).toLocaleDateString()}</span>
-                    </div>
-                  </div>
+        <div className="lg:col-span-1">
+  {jobDetails && (
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 h-fit sticky top-24">
+      <div className="p-6 space-y-6">
+        {/* Job Title Section */}
+        <div className="border-b border-gray-200 pb-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">{jobDetails.title}</h2>
+          <span className="inline-flex items-center px-3 py-1 rounded-lg text-sm font-medium bg-blue-50 text-blue-700 border border-blue-100">
+            {jobDetails.employmentType}
+          </span>
+        </div>
 
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Required Skills</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {jobDetails.requiredSkills.map((skill) => (
-                        <span key={skill} className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Nice to Have</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {jobDetails.niceToHaveSkills.map((skill) => (
-                        <span key={skill} className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+        {/* Job Details */}
+        <div className="grid grid-cols-1 gap-3">
+          <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
+            <MapPin className="h-4 w-4 text-blue-600"/>
+            <span className="text-sm text-gray-700">{jobDetails.location}</span>
           </div>
+          <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
+            <Clock className="h-4 w-4 text-blue-600"/>
+            <span className="text-sm text-gray-700">{jobDetails.workType}</span>
+          </div>
+          <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
+            <Briefcase className="h-4 w-4 text-blue-600"/>
+            <span className="text-sm text-gray-700">{jobDetails.employmentType}</span>
+          </div>
+          <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
+            <Calendar className="h-4 w-4 text-blue-600"/>
+            <span className="text-sm text-gray-700">Posted {new Date(jobDetails.createdAt).toLocaleDateString()}</span>
+          </div>
+        </div>
 
+        {/* Skills sections */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-900">Required Skills</h3>
+          <div className="flex flex-wrap gap-2">
+            {jobDetails.requiredSkills.map((skill) => (
+              <span key={skill} className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200">
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-900">Nice to Have</h3>
+          <div className="flex flex-wrap gap-2">
+            {jobDetails.niceToHaveSkills.map((skill) => (
+              <span key={skill} className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200">
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )}
+</div>
           <div className="lg:col-span-2">
-            {organizationDetails && (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
-                <div className="p-6">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">{organizationDetails.name}</h2>
-                  <p className="text-gray-600">{organizationDetails.description}</p>
-                </div>
-              </div>
-            )}
-
             {jobDetails && (
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
                 <div className="p-6">
