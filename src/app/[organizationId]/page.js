@@ -71,63 +71,59 @@ export default function Home({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
-      <Header organizationDetails={organizationDetails}></Header>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
+      <Header organizationDetails={organizationDetails} />
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="mb-4 flex justify-between items-center">
-          <p className="text-gray-600">
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        <div className="mb-8">
+          <p className="mt-4 text-gray-600 font-medium">
             Showing {filteredJobs.length} {filteredJobs.length === 1 ? 'position' : 'positions'}
           </p>
         </div>
 
         <div className="grid gap-6">
           {filteredJobs.length === 0 ? (
-            <div className="bg-white rounded-lg p-8 text-center text-gray-600 shadow-sm border border-gray-200">
-              <Search className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-lg font-medium">No job openings found</p>
-              <p className="mt-1 text-gray-500">Try adjusting your search terms</p>
+            <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
+              <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p className="text-xl font-semibold text-gray-900">No job openings found</p>
+              <p className="mt-2 text-gray-600">Try adjusting your search terms</p>
             </div>
           ) : (
             filteredJobs.map((job) => (
               <div key={job._id}>
-              <Link href={`/${organizationId}/jobs/${job._id}`} className="block group">
-                  <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-200 transition-all duration-200">
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h2 className="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-                            {job.title}
-                          </h2>
-                          <p className="mt-2 text-gray-600 line-clamp-2">
-                            {job.description}
-                          </p>
-                        </div>
-                  
+                <Link href={`/${organizationId}/jobs/${job._id}`} className="block group">
+                  <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-blue-100 transition-all duration-200 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                    <div className="relative space-y-4">
+                      <div>
+                        <h2 className="text-2xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                          {job.title}
+                        </h2>
+                        <p className="mt-3 text-gray-600 line-clamp-2 leading-relaxed">
+                          {job.description}
+                        </p>
                       </div>
 
-                      <div className="flex flex-wrap gap-6 text-sm text-gray-500">
+                      <div className="flex flex-wrap gap-6 text-sm text-gray-500 pt-2">
                         {job.location && (
                           <div className="flex items-center gap-2">
-                            <MapPin className="w-4 h-4 text-gray-400" />
-                            <span>{job.location}</span>
+                            <MapPin className="w-5 h-5 text-gray-400" />
+                            <span className="font-medium">{job.location}</span>
                           </div>
                         )}
                         {job.workType && (
                           <div className="flex items-center gap-2">
-                            <Briefcase className="w-4 h-4 text-gray-400" />
-                            <span>{job.workType}</span>
+                            <Briefcase className="w-5 h-5 text-gray-400" />
+                            <span className="font-medium">{job.workType}</span>
                           </div>
                         )}
                         {job.createdAt && (
                           <div className="flex items-center gap-2">
-                            <Calendar className="w-4 h-4 text-gray-400" />
-                            <span>Posted {formatDate(job.createdAt)}</span>
+                            <Calendar className="w-5 h-5 text-gray-400" />
+                            <span className="font-medium">Posted {formatDate(job.createdAt)}</span>
                           </div>
                         )}
                       </div>
-
-                    
                     </div>
                   </div>
                 </Link>
@@ -138,4 +134,5 @@ export default function Home({ params }) {
       </main>
     </div>
   );
-}
+};
+
