@@ -2,7 +2,7 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'Job Platform',
+  title: 'RightCruiter',
   description: 'Find and apply for jobs',
 };
 

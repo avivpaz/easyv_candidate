@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { MapPin, Clock, Briefcase, Calendar, Globe, Linkedin } from 'lucide-react';
+import { MapPin, Clock, Briefcase, Calendar, ArrowLeft, Linkedin } from 'lucide-react';
 import ApiService from '@/app/services/ApiService';
 import LoadingState from '@/app/components/loadingState';
 import Header from '../../../components/header';
+import Link from 'next/link';
 
 export default function JobApplication() {
   const [isLoading, setIsLoading] = useState(true);
@@ -129,10 +130,17 @@ export default function JobApplication() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <Header organizationDetails={organizationDetails}></Header>
-
-
+      <Header organizationDetails={organizationDetails} ></Header>
       <main className="max-w-7xl mx-auto px-4 py-8">
+        <div className="mb-6">
+          <Link 
+            href={`/${organizationId}`}
+            className="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            <span>View All Jobs</span>
+          </Link>
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1">
   {jobDetails && (
@@ -141,9 +149,7 @@ export default function JobApplication() {
         {/* Job Title Section */}
         <div className="border-b border-gray-200 pb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">{jobDetails.title}</h2>
-          <span className="inline-flex items-center px-3 py-1 rounded-lg text-sm font-medium bg-blue-50 text-blue-700 border border-blue-100">
-            {jobDetails.employmentType}
-          </span>
+
         </div>
 
         {/* Job Details */}
@@ -206,61 +212,6 @@ export default function JobApplication() {
               <div className="p-6">
                 <h2 className="text-2xl font-semibold text-gray-900 mb-8">Apply Now</h2>
                 <form onSubmit={handleSubmit} className="space-y-8">
-                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
-                        Full Name *
-                      </label>
-                      <input
-                        type="text"
-                        id="fullName"
-                        required
-                        className="block w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-colors"
-                        value={formData.fullName}
-                        onChange={(e) => setFormData({...formData, fullName: e.target.value})}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                        Email Address *
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        required
-                        className="block w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-colors"
-                        value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                        Phone Number
-                      </label>
-                      <input
-                        type="tel"
-                        id="phone"
-                        className="block w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-colors"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label htmlFor="linkedin" className="block text-sm font-medium text-gray-700">
-                        LinkedIn Profile
-                      </label>
-                      <input
-                        type="url"
-                        id="linkedin"
-                        className="block w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-colors"
-                        value={formData.linkedin}
-                        onChange={(e) => setFormData({...formData, linkedin: e.target.value})}
-                      />
-                    </div>
-                  </div>
 
                   <div className="space-y-4">
                     <div className="flex items-center space-x-4">
