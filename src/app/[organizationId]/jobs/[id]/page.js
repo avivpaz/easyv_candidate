@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { MapPin, Clock, Briefcase, Calendar, ArrowLeft, Linkedin } from 'lucide-react';
 import ApiService from '@/app/services/ApiService';
 import LoadingState from '@/app/components/loadingState';
@@ -9,6 +9,7 @@ import Header from '../../../components/header';
 import Link from 'next/link';
 
 export default function JobApplication() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [organizationDetails, setOrganizationDetails] = useState(null);
@@ -67,27 +68,21 @@ export default function JobApplication() {
     if (submissionType === 'file' && file) {
       try {
         await ApiService.submitApplication(organizationId, jobId, file);
-        alert('Application submitted successfully!');
         router.push('/applications/success');
       } catch (error) {
         console.error('Error:', error);
-        alert('Failed to submit application');
+        setError('Failed to submit application');
       }
     } else if (submissionType === 'text' && formData.cvText) {
       formDataToSend.append('cvText', formData.cvText);
       try {
-        const response = await fetch('/api/applications', {
-          method: 'POST',
-          body: formDataToSend,
-        });
-        const data = await response.json();
-        if (data.success) {
-          alert('Application submitted successfully!');
+        const response = await ApiService.submitApplication(organizationId, jobId, formDataToSend);
+        if (response.success) {
           router.push('/applications/success');
         }
       } catch (error) {
         console.error('Error:', error);
-        alert('Failed to submit application');
+        setError('Failed to submit application');
       }
     }
   };
@@ -109,9 +104,7 @@ export default function JobApplication() {
   };
 
   if (isLoading) {
-    if (isLoading) {
-      return <LoadingState />;
-    }
+    return <LoadingState />;
   }
 
   if (error) {
@@ -120,7 +113,11 @@ export default function JobApplication() {
         <div className="bg-white p-8 rounded-lg shadow-sm text-center">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Error</h2>
           <p className="text-gray-600">{error}</p>
-          <button onClick={() => router.push('/')} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          <button 
+            onClick={() => router.push('/')} 
+            className="mt-4 px-4 py-2 text-white rounded-lg transition-colors"
+            style={{ backgroundColor: organizationDetails?.brandColor || '#1e293b' }}
+          >
             Go Back
           </button>
         </div>
@@ -129,75 +126,97 @@ export default function JobApplication() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <Header organizationDetails={organizationDetails} ></Header>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      <Header organizationDetails={organizationDetails} />
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-6">
           <Link 
             href={`/${organizationId}`}
-            className="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors"
+            className="inline-flex items-center transition-colors"
+            style={{ color: organizationDetails?.brandColor || '#1e293b' }}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             <span>View All Jobs</span>
           </Link>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-1">
-  {jobDetails && (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 h-fit sticky top-24">
-      <div className="p-6 space-y-6">
-        {/* Job Title Section */}
-        <div className="border-b border-gray-200 pb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">{jobDetails.title}</h2>
+          <div className="lg:col-span-1">
+            {jobDetails && (
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 h-fit sticky top-24">
+                <div className="p-6 space-y-6">
+                  {/* Job Title Section */}
+                  <div className="border-b border-gray-200 pb-6">
+                    <h2 
+                      className="text-2xl font-bold mb-2"
+                      style={{ color: organizationDetails?.brandColor || '#1e293b' }}
+                    >
+                      {jobDetails.title}
+                    </h2>
+                  </div>
 
-        </div>
+                  {/* Job Details */}
+                  <div className="grid grid-cols-1 gap-3">
+                    <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
+                      <MapPin className="h-4 w-4" style={{ color: organizationDetails?.brandColor || '#1e293b' }}/>
+                      <span className="text-sm text-gray-700">{jobDetails.location}</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
+                      <Clock className="h-4 w-4" style={{ color: organizationDetails?.brandColor || '#1e293b' }}/>
+                      <span className="text-sm text-gray-700">{jobDetails.workType}</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
+                      <Briefcase className="h-4 w-4" style={{ color: organizationDetails?.brandColor || '#1e293b' }}/>
+                      <span className="text-sm text-gray-700">{jobDetails.employmentType}</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
+                      <Calendar className="h-4 w-4" style={{ color: organizationDetails?.brandColor || '#1e293b' }}/>
+                      <span className="text-sm text-gray-700">Posted {new Date(jobDetails.createdAt).toLocaleDateString()}</span>
+                    </div>
+                  </div>
 
-        {/* Job Details */}
-        <div className="grid grid-cols-1 gap-3">
-          <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
-            <MapPin className="h-4 w-4 text-blue-600"/>
-            <span className="text-sm text-gray-700">{jobDetails.location}</span>
-          </div>
-          <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
-            <Clock className="h-4 w-4 text-blue-600"/>
-            <span className="text-sm text-gray-700">{jobDetails.workType}</span>
-          </div>
-          <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
-            <Briefcase className="h-4 w-4 text-blue-600"/>
-            <span className="text-sm text-gray-700">{jobDetails.employmentType}</span>
-          </div>
-          <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
-            <Calendar className="h-4 w-4 text-blue-600"/>
-            <span className="text-sm text-gray-700">Posted {new Date(jobDetails.createdAt).toLocaleDateString()}</span>
-          </div>
-        </div>
+                  {/* Skills sections */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900">Required Skills</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {jobDetails.requiredSkills.map((skill) => (
+                        <span 
+                          key={skill} 
+                          className="px-3 py-1 rounded-full text-sm font-medium border"
+                          style={{ 
+                            backgroundColor: `${organizationDetails?.brandColor}15`,
+                            borderColor: `${organizationDetails?.brandColor}30`,
+                            color: organizationDetails?.brandColor || '#1e293b'
+                          }}
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
 
-        {/* Skills sections */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900">Required Skills</h3>
-          <div className="flex flex-wrap gap-2">
-            {jobDetails.requiredSkills.map((skill) => (
-              <span key={skill} className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200">
-                {skill}
-              </span>
-            ))}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900">Nice to Have</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {jobDetails.niceToHaveSkills.map((skill) => (
+                        <span 
+                          key={skill} 
+                          className="px-3 py-1 rounded-full text-sm font-medium border"
+                          style={{ 
+                            backgroundColor: `${organizationDetails?.brandColor}10`,
+                            borderColor: `${organizationDetails?.brandColor}20`,
+                            color: organizationDetails?.brandColor || '#1e293b'
+                          }}
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
 
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900">Nice to Have</h3>
-          <div className="flex flex-wrap gap-2">
-            {jobDetails.niceToHaveSkills.map((skill) => (
-              <span key={skill} className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200">
-                {skill}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  )}
-</div>
           <div className="lg:col-span-2">
             {jobDetails && (
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
@@ -212,7 +231,6 @@ export default function JobApplication() {
               <div className="p-6">
                 <h2 className="text-2xl font-semibold text-gray-900 mb-8">Apply Now</h2>
                 <form onSubmit={handleSubmit} className="space-y-8">
-
                   <div className="space-y-4">
                     <div className="flex items-center space-x-4">
                       <label className="text-sm font-medium text-gray-700">Choose submission type:</label>
@@ -220,22 +238,28 @@ export default function JobApplication() {
                         <label className="inline-flex items-center">
                           <input
                             type="radio"
-                            className="form-radio text-blue-600"
+                            className="form-radio"
                             name="submissionType"
                             value="file"
                             checked={submissionType === 'file'}
                             onChange={(e) => setSubmissionType(e.target.value)}
+                            style={{ 
+                              accentColor: organizationDetails?.brandColor || '#1e293b'
+                            }}
                           />
                           <span className="ml-2">Upload CV</span>
                         </label>
                         <label className="inline-flex items-center">
                           <input
                             type="radio"
-                            className="form-radio text-blue-600"
+                            className="form-radio"
                             name="submissionType"
                             value="text"
                             checked={submissionType === 'text'}
                             onChange={(e) => setSubmissionType(e.target.value)}
+                            style={{ 
+                              accentColor: organizationDetails?.brandColor || '#1e293b'
+                            }}
                           />
                           <span className="ml-2">Write about yourself</span>
                         </label>
@@ -243,13 +267,20 @@ export default function JobApplication() {
                     </div>
 
                     {submissionType === 'file' ? (
-                      <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-500 transition-colors">
+                      <div 
+                        className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg transition-colors"
+                        style={{ 
+                          borderColor: `${organizationDetails?.brandColor}50` || '#1e293b50',
+                          backgroundColor: `${organizationDetails?.brandColor}05` || '#1e293b05'
+                        }}
+                      >
                         {!filePreview ? (
                           <div className="space-y-2 text-center">
-                            <div className="mx-auto h-12 w-12 text-gray-400">
+                            <div className="mx-auto h-12 w-12">
                               <svg
                                 className="mx-auto h-12 w-12"
-                                stroke="currentColor"fill="none"
+                                stroke={organizationDetails?.brandColor || '#1e293b'}
+                                fill="none"
                                 viewBox="0 0 48 48"
                               >
                                 <path
@@ -261,8 +292,10 @@ export default function JobApplication() {
                               </svg>
                             </div>
                             <div className="flex text-sm text-gray-600 justify-center">
-                              <label className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500">
-                                <span>Upload a file</span>
+                              <label className="relative cursor-pointer rounded-md font-medium transition-colors">
+                                <span style={{ color: organizationDetails?.brandColor || '#1e293b' }}>
+                                  Upload a file
+                                </span>
                                 <input
                                   type="file"
                                   className="sr-only"
@@ -280,9 +313,9 @@ export default function JobApplication() {
                               <div className="flex items-center space-x-4">
                                 <div className="flex-shrink-0">
                                   <svg 
-                                    className="h-8 w-8 text-gray-400" 
+                                    className="h-8 w-8" 
                                     fill="none" 
-                                    stroke="currentColor" 
+                                    stroke={organizationDetails?.brandColor || '#1e293b'}
                                     viewBox="0 0 24 24"
                                   >
                                     <path 
@@ -301,12 +334,13 @@ export default function JobApplication() {
                                     {filePreview.size} MB
                                   </p>
                                 </div>
-                              </div>
+                                </div>
                               <div className="flex space-x-4">
                                 <button
                                   type="button"
                                   onClick={() => document.querySelector('input[type="file"]').click()}
-                                  className="text-sm text-blue-600 hover:text-blue-500 font-medium"
+                                  className="text-sm font-medium transition-colors"
+                                  style={{ color: organizationDetails?.brandColor || '#1e293b' }}
                                 >
                                   Change
                                 </button>
@@ -329,7 +363,11 @@ export default function JobApplication() {
                         </label>
                         <textarea
                           required
-                          className="block w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 transition-colors"
+                          className="block w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:ring-2 focus:ring-opacity-20"
+                          style={{ 
+                            focusBorderColor: organizationDetails?.brandColor || '#1e293b',
+                            focusRingColor: `${organizationDetails?.brandColor}40` || '#1e293b40'
+                          }}
                           rows="10"
                           value={formData.cvText}
                           onChange={(e) => setFormData({...formData, cvText: e.target.value})}
@@ -339,14 +377,93 @@ export default function JobApplication() {
                     )}
                   </div>
 
-                  <div>
-                    <button
-                      type="submit"
-                      className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                    >
-                      Submit Application
-                    </button>
-                  </div>
+                  {/* Personal Information Form
+                  <div className="space-y-4 border-t border-gray-200 pt-6">
+                    <h3 className="text-lg font-semibold text-gray-900">Personal Information</h3>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Full Name *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.fullName}
+                          onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-opacity-20 transition-colors"
+                          style={{ 
+                            focusBorderColor: organizationDetails?.brandColor || '#1e293b',
+                            focusRingColor: `${organizationDetails?.brandColor}40` || '#1e293b40'
+                          }}
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Email Address *
+                        </label>
+                        <input
+                          type="email"
+                          required
+                          value={formData.email}
+                          onChange={(e) => setFormData({...formData, email: e.target.value})}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-opacity-20 transition-colors"
+                          style={{ 
+                            focusBorderColor: organizationDetails?.brandColor || '#1e293b',
+                            focusRingColor: `${organizationDetails?.brandColor}40` || '#1e293b40'
+                          }}
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Phone Number (optional)
+                        </label>
+                        <input
+                          type="tel"
+                          value={formData.phone}
+                          onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-opacity-20 transition-colors"
+                          style={{ 
+                            focusBorderColor: organizationDetails?.brandColor || '#1e293b',
+                            focusRingColor: `${organizationDetails?.brandColor}40` || '#1e293b40'
+                          }}
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          LinkedIn Profile (optional)
+                        </label>
+                        <input
+                          type="url"
+                          value={formData.linkedin}
+                          onChange={(e) => setFormData({...formData, linkedin: e.target.value})}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-opacity-20 transition-colors"
+                          style={{ 
+                            focusBorderColor: organizationDetails?.brandColor || '#1e293b',
+                            focusRingColor: `${organizationDetails?.brandColor}40` || '#1e293b40'
+                          }}
+                          placeholder="https://linkedin.com/in/yourprofile"
+                        />
+                      </div>
+                    </div>
+                  </div> */}
+
+                  {error && (
+                    <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
+                      {error}
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white transition-colors hover:opacity-90"
+                    style={{ backgroundColor: organizationDetails?.brandColor || '#1e293b' }}
+                  >
+                    Submit Application
+                  </button>
                 </form>
               </div>
             </div>

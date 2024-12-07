@@ -8,7 +8,7 @@ const Header = ({ organizationDetails }) => {
       try {
         await navigator.clipboard.writeText(window.location.href);
         setCopied(true);
-        setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+        setTimeout(() => setCopied(false), 2000);
       } catch (err) {
         console.error('Failed to copy URL:', err);
       }
@@ -20,7 +20,10 @@ const Header = ({ organizationDetails }) => {
       <div className="w-full h-40 relative overflow-hidden">
         {organizationDetails?.bannerUrl && !bannerError ? (
           <>
-            <div className="absolute inset-0 bg-slate-900/30 z-10" />
+            <div className="absolute inset-0" style={{ 
+              backgroundColor: organizationDetails?.brandColor || '#1e293b',
+              opacity: 0.9 
+            }} />
             <img 
               src={organizationDetails.bannerUrl}
               alt="Company banner"
@@ -29,11 +32,11 @@ const Header = ({ organizationDetails }) => {
             />
           </>
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 animate-gradient-slow">
+          <div className="absolute inset-0" style={{ backgroundColor: organizationDetails?.brandColor || '#1e293b' }}>
             <div className="absolute inset-0 opacity-20">
               <div className="absolute inset-0 bg-grid-white/[0.2] bg-[size:20px_20px]" />
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
           </div>
         )}
       </div>
@@ -50,7 +53,10 @@ const Header = ({ organizationDetails }) => {
               />
             </div>
           ) : (
-            <div className="w-20 h-20 bg-gradient-to-br from-slate-700 to-slate-800 rounded-xl shadow-md flex items-center justify-center shrink-0">
+            <div 
+              className="w-20 h-20 rounded-xl shadow-md flex items-center justify-center shrink-0"
+              style={{ backgroundColor: organizationDetails?.brandColor || '#1e293b' }}
+            >
               <span className="text-3xl font-bold text-white">
                 {organizationDetails?.name?.charAt(0)}
               </span>
@@ -73,14 +79,14 @@ const Header = ({ organizationDetails }) => {
               
               {/* Action Buttons */}
               <div className="flex items-center gap-3">
-              <div className="relative">
+                <div className="relative">
                   <button 
                     onClick={handleShare}
                     className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 
                       ${copied 
                         ? 'bg-green-100 text-green-700' 
-                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                      }`}
+                        : 'text-white hover:opacity-90'}`}
+                    style={{ backgroundColor: copied ? undefined : organizationDetails?.brandColor || '#1e293b' }}
                   >
                     {copied ? (
                       <>
@@ -95,7 +101,6 @@ const Header = ({ organizationDetails }) => {
                     )}
                   </button>
                 </div>
-             
               </div>
             </div>
 
@@ -112,7 +117,7 @@ const Header = ({ organizationDetails }) => {
                   <span>Website</span>
                 </a>
               )}
-            {organizationDetails?.linkedinUrl && (
+              {organizationDetails?.linkedinUrl && (
                 <a 
                   href={organizationDetails.linkedinUrl}
                   target="_blank"
@@ -123,7 +128,6 @@ const Header = ({ organizationDetails }) => {
                   <span>Linkedin</span>
                 </a>
               )}
-           
             </div>
           </div>
         </div>
