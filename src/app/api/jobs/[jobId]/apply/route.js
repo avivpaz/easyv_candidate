@@ -23,10 +23,9 @@ export async function POST(request, { params }) {
       });
   
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        
+        const errorData = await response.json();
         return NextResponse.json(
-          { error: errorData?.message || `Request failed with status ${response.status}` },
+          { error: errorData.error }, // Use the error from the backend response
           { status: response.status }
         );
       }
@@ -36,7 +35,7 @@ export async function POST(request, { params }) {
     } catch (error) {
       console.error('Fetch Error:', error);
       return NextResponse.json(
-        { error: 'Failed to submit application' },
+        { error: error },
         { status: 500 }
       );
     }

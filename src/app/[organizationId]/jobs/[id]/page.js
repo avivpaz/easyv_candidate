@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { MapPin, Clock, Briefcase, Calendar, ArrowLeft, Linkedin,Loader2,Check } from 'lucide-react';
+import { MapPin, Clock, Briefcase, Calendar, ArrowLeft, Linkedin,AlertCircle,Check } from 'lucide-react';
 import ApiService from '@/app/services/ApiService';
 import LoadingState from '@/app/components/loadingState';
 import Header from '../../../components/header';
@@ -69,23 +69,24 @@ export default function JobApplication() {
     try {
       if (submissionType === 'file' && file) {
         formDataToSend.append('cv', file);
-        await ApiService.submitApplication(jobId, formDataToSend);
-        setIsSubmitted(true);
       } else if (submissionType === 'text' && formData.cvText) {
         formDataToSend.append('cvText', formData.cvText);
-        const response = await ApiService.submitApplication(jobId, formDataToSend);
-        if (response.success) {
-          setIsSubmitted(true);
-        }
       }
+
+      const response = await ApiService.submitApplication(jobId, formDataToSend);
+      
+      if (response.error === 'cv_duplication') {
+        setError('cv_duplication');
+        return;
+      }
+
+      setIsSubmitted(true);
     } catch (error) {
-      console.error('Error:', error);
       setError('Failed to submit application. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
-  };
-
+};
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files?.[0];
@@ -103,6 +104,30 @@ export default function JobApplication() {
     setFilePreview(null);
   };
 
+  const AlreadyAppliedMessage = () => (
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+      <div className="flex flex-col items-center justify-center text-center">
+        <div className="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center mb-4">
+          <AlertCircle className="h-6 w-6 text-yellow-600" />
+        </div>
+        <h2 className="text-2xl font-semibold text-gray-900 mb-3">Already Applied</h2>
+        <p className="text-gray-600 mb-6">
+          You have already submitted an application for this position. 
+          We appreciate your interest!
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Link
+            href={`/${organizationId}`}
+            className="inline-flex items-center justify-center px-6 py-3 rounded-lg text-sm font-medium text-white transition-colors hover:opacity-90"
+            style={{ backgroundColor: organizationDetails?.brandColor || '#1e293b' }}
+          >
+            View Other Positions
+          </Link>
+      
+        </div>
+      </div>
+    </div>
+  );
   const LoadingSection = () => (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
       <div className="flex flex-col items-center justify-center">
@@ -142,7 +167,7 @@ export default function JobApplication() {
     return <LoadingState />;
   }
 
-  if (error) {
+  if (error && error !== 'cv_duplication') {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="bg-white p-8 rounded-lg shadow-sm text-center">
@@ -159,7 +184,6 @@ export default function JobApplication() {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Header organizationDetails={organizationDetails} />
@@ -261,11 +285,12 @@ export default function JobApplication() {
                 </div>
               </div>
             )}
-
-            {isSubmitting ? (
+         {isSubmitting ? (
               <LoadingSection />
             ) : isSubmitted ? (
               <SuccessMessage />
+            ) : error === 'cv_duplication' ? (
+              <AlreadyAppliedMessage />
             ) : (
             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
               <div className="p-6">
