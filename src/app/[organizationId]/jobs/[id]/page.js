@@ -299,12 +299,12 @@ export default function JobApplication() {
                                   type="file"
                                   className="sr-only"
                                   onChange={handleFileChange}
-                                  accept=".pdf,.doc,.docx"
+                                  accept=".pdf"
                                 />
                               </label>
                               <p className="pl-1">or drag and drop</p>
                             </div>
-                            <p className="text-xs text-gray-500">PDF or DOC up to 10MB</p>
+                            <p className="text-xs text-gray-500">PDF up to 10MB</p>
                           </div>
                         ) : (
                           <div className="w-full">
