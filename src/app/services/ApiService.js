@@ -34,9 +34,7 @@ class ApiService {
       return this.#fetchApi(`/jobs/${jobId}`);
     }
   
-    async submitApplication( jobId, file) {
-      const formData = new FormData();
-      formData.append('cv', file);
+    async submitApplication( jobId, formData) {
   
       return this.#fetchApi(`/jobs/${jobId}/apply`, {
         method: 'POST',

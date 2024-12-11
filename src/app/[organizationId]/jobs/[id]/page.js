@@ -15,10 +15,6 @@ export default function JobApplication() {
   const [organizationDetails, setOrganizationDetails] = useState(null);
   const [jobDetails, setJobDetails] = useState(null);
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    linkedin: '',
     cvText: '',
   });
   const [file, setFile] = useState(null);
@@ -59,6 +55,7 @@ export default function JobApplication() {
     e.preventDefault();
     const formDataToSend = new FormData();
     
+    // Add all form fields to FormData
     Object.keys(formData).forEach(key => {
       formDataToSend.append(key, formData[key]);
     });
@@ -66,8 +63,10 @@ export default function JobApplication() {
     formDataToSend.append('submissionType', submissionType);
 
     if (submissionType === 'file' && file) {
+      formDataToSend.append('cv', file); // Add the file to FormData
+      
       try {
-        await ApiService.submitApplication(organizationId, jobId, file);
+        await ApiService.submitApplication( jobId, formDataToSend);
         router.push('/applications/success');
       } catch (error) {
         console.error('Error:', error);
@@ -76,7 +75,7 @@ export default function JobApplication() {
     } else if (submissionType === 'text' && formData.cvText) {
       formDataToSend.append('cvText', formData.cvText);
       try {
-        const response = await ApiService.submitApplication(organizationId, jobId, formDataToSend);
+        const response = await ApiService.submitApplication( jobId, formDataToSend);
         if (response.success) {
           router.push('/applications/success');
         }
