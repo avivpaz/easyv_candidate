@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { MapPin, Clock, Briefcase, Calendar, ArrowLeft, Linkedin } from 'lucide-react';
+import { MapPin, Clock, Briefcase, Calendar, ArrowLeft, Linkedin,Loader2,Check } from 'lucide-react';
 import ApiService from '@/app/services/ApiService';
 import LoadingState from '@/app/components/loadingState';
 import Header from '../../../components/header';
@@ -11,6 +11,8 @@ import Link from 'next/link';
 export default function JobApplication() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState(null);
   const [organizationDetails, setOrganizationDetails] = useState(null);
   const [jobDetails, setJobDetails] = useState(null);
@@ -53,38 +55,37 @@ export default function JobApplication() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+    
     const formDataToSend = new FormData();
     
-    // Add all form fields to FormData
     Object.keys(formData).forEach(key => {
       formDataToSend.append(key, formData[key]);
     });
     
     formDataToSend.append('submissionType', submissionType);
 
-    if (submissionType === 'file' && file) {
-      formDataToSend.append('cv', file); // Add the file to FormData
-      
-      try {
-        await ApiService.submitApplication( jobId, formDataToSend);
-        router.push('/applications/success');
-      } catch (error) {
-        console.error('Error:', error);
-        setError('Failed to submit application');
-      }
-    } else if (submissionType === 'text' && formData.cvText) {
-      formDataToSend.append('cvText', formData.cvText);
-      try {
-        const response = await ApiService.submitApplication( jobId, formDataToSend);
+    try {
+      if (submissionType === 'file' && file) {
+        formDataToSend.append('cv', file);
+        await ApiService.submitApplication(jobId, formDataToSend);
+        setIsSubmitted(true);
+      } else if (submissionType === 'text' && formData.cvText) {
+        formDataToSend.append('cvText', formData.cvText);
+        const response = await ApiService.submitApplication(jobId, formDataToSend);
         if (response.success) {
-          router.push('/applications/success');
+          setIsSubmitted(true);
         }
-      } catch (error) {
-        console.error('Error:', error);
-        setError('Failed to submit application');
       }
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Failed to submit application. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files?.[0];
@@ -101,6 +102,41 @@ export default function JobApplication() {
     setFile(null);
     setFilePreview(null);
   };
+
+  const LoadingSection = () => (
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+      <div className="flex flex-col items-center justify-center">
+        <div className="w-16 h-16 border-4 border-t-4 rounded-full animate-spin mb-4"
+          style={{ 
+            borderColor: `${organizationDetails?.brandColor}20` || '#1e293b20',
+            borderTopColor: organizationDetails?.brandColor || '#1e293b'
+          }}
+        ></div>
+        <h3 className="text-lg font-medium text-gray-900">Submitting your application...</h3>
+        <p className="text-gray-500 mt-2">Please wait while we process your submission.</p>
+      </div>
+    </div>
+  );
+  const SuccessMessage = () => (
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+      <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+        <Check className="h-6 w-6 text-green-600" />
+      </div>
+      <h2 className="text-2xl font-semibold text-gray-900 mb-4">Thank You for Your Application!</h2>
+      <p className="text-gray-600 mb-8">
+        We've received your application for the {jobDetails?.title} position. 
+        Our team will review your application and get back to you soon.
+      </p>
+      <Link 
+        href={`/${organizationId}`}
+        className="inline-flex items-center justify-center px-6 py-3 rounded-lg text-sm font-medium text-white transition-colors hover:opacity-90"
+        style={{ backgroundColor: organizationDetails?.brandColor || '#1e293b' }}
+      >
+        View More Jobs
+      </Link>
+    </div>
+  );
+
 
   if (isLoading) {
     return <LoadingState />;
@@ -226,6 +262,11 @@ export default function JobApplication() {
               </div>
             )}
 
+            {isSubmitting ? (
+              <LoadingSection />
+            ) : isSubmitted ? (
+              <SuccessMessage />
+            ) : (
             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
               <div className="p-6">
                 <h2 className="text-2xl font-semibold text-gray-900 mb-8">Apply Now</h2>
@@ -455,18 +496,19 @@ export default function JobApplication() {
                       {error}
                     </div>
                   )}
-
-                  <button
-                    type="submit"
-                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white transition-colors hover:opacity-90"
-                    style={{ backgroundColor: organizationDetails?.brandColor || '#1e293b' }}
-                  >
-                    Submit Application
-                  </button>
+    <button
+                      type="submit"
+                      className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white transition-colors hover:opacity-90"
+                      style={{ backgroundColor: organizationDetails?.brandColor || '#1e293b' }}
+                    >
+                      Submit Application
+                    </button>
                 </form>
               </div>
             </div>
+                        )}
           </div>
+        
         </div>
       </main>
     </div>
