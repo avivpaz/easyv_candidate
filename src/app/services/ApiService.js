@@ -8,7 +8,7 @@ class ApiService {
   getAbsoluteUrl(path) {
     if (typeof window === 'undefined') {
       // Server-side: use full URL
-      const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3002';
+      const baseUrl = process.env.NEXTAUTH_URL ;
       return `${baseUrl}${path}`;
     }
     // Client-side: use relative path
