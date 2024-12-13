@@ -1,22 +1,24 @@
 // services/ApiService.js
 class ApiService {
   constructor() {
-    // Use environment variable for base URL, with no fallback to localhost
-    this.baseUrl = process.env.NEXT_PUBLIC_API_URL;
-    
-    if (!this.baseUrl) {
-      console.warn('NEXT_PUBLIC_API_URL environment variable is not set');
+    this.baseUrl = '/api';
+  }
+
+  // Helper to get absolute URL for server-side requests
+  getAbsoluteUrl(path) {
+    if (typeof window === 'undefined') {
+      // Server-side: use full URL
+      const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3002';
+      return `${baseUrl}${path}`;
     }
+    // Client-side: use relative path
+    return path;
   }
 
   async #fetchApi(endpoint, options = {}) {
     try {
-      if (!this.baseUrl) {
-        throw new Error('API base URL is not configured');
-      }
-
       const isFormData = options.body instanceof FormData;
-      const url = `${this.baseUrl}/api${endpoint}`;
+      const url = this.getAbsoluteUrl(`${this.baseUrl}${endpoint}`);
       
       const response = await fetch(url, {
         ...options,
@@ -26,36 +28,15 @@ class ApiService {
         },
       });
       
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.error || 'API request failed');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error occurred' }));
+        throw new Error(errorData.error || 'API request failed');
       }
 
+      const data = await response.json();
       return data;
     } catch (error) {
       console.error(`API Error (${endpoint}):`, error);
-      throw error;
-    }
-  }
-
-  // Static method for handling server-side calls
-  async getServerSideApi(endpoint) {
-    if (!process.env.NEXT_PUBLIC_API_URL) {
-      throw new Error('NEXT_PUBLIC_API_URL environment variable is not set');
-    }
-
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api${endpoint}`);
-      
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({ error: 'Unknown error' }));
-        throw new Error(error.message || `Request failed with status ${response.status}`);
-      }
-
-      return response.json();
-    } catch (error) {
-      console.error(`Server-side API Error (${endpoint}):`, error);
       throw error;
     }
   }
@@ -79,8 +60,14 @@ class ApiService {
       body: formData
     });
   }
+
+  // Server-side method uses the same fetch mechanism
+  async getServerSideApi(endpoint) {
+    return this.#fetchApi(endpoint);
+  }
 }
 
+// Create a singleton instance
 const apiService = new ApiService();
 
 export { ApiService };
