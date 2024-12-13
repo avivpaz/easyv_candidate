@@ -19,35 +19,39 @@ async function getJobData(params) {
 }
 
 export async function generateMetadata({ params }) {
-  const { organizationDetails, jobDetails } = await getJobData(params);
+  const { organizationDetails } = await getOrganizationData(params.organizationId);
 
+  // Ensure we have fallback values for required fields
+  const title = organizationDetails.name || 'Organization Profile';
+  const description = organizationDetails.description || 'View all job openings';
+  
   return {
-    title: `${jobDetails.title} at ${organizationDetails.name}`,
-    description: jobDetails.description,
+    title,
+    description,
     openGraph: {
-      title: `${jobDetails.title} at ${organizationDetails.name}`,
-      description: `${jobDetails.workType} ${jobDetails.employmentType} position in ${jobDetails.location}. Required Skills: ${jobDetails.requiredSkills.join(', ')}`,
+      title,
+      description,
       images: [
         {
           url: organizationDetails.logoUrl || '/og-image.jpg',
           width: 1200,
           height: 630,
-          alt: organizationDetails.name
+          alt: title
         }
       ],
-      siteName: organizationDetails.name,
+      siteName: title,
       type: 'website',
-      locale: 'en_US',
+      locale: 'en_US',  // Add locale
     },
+    // Add Twitter card metadata for better social sharing
     twitter: {
       card: 'summary_large_image',
-      title: `${jobDetails.title} at ${organizationDetails.name}`,
-      description: jobDetails.description,
+      title,
+      description,
       images: [organizationDetails.logoUrl || '/og-image.jpg'],
     }
   };
 }
-
 export default async function Page({ params }) {
   const initialData = await getJobData(params);
   return <JobApplication params={params} initialData={initialData} />;
