@@ -7,14 +7,16 @@ class ApiService {
   // Helper to get absolute URL for server-side requests
   getAbsoluteUrl(path) {
     if (typeof window === 'undefined') {
-      // Server-side: use full URL
-      const baseUrl = process.env.NEXTAUTH_URL ;
+      // Server-side: use NEXTAUTH_URL from environment
+      const baseUrl = process.env.NEXTAUTH_URL;
+      if (!baseUrl) {
+        throw new Error('NEXTAUTH_URL environment variable is not configured');
+      }
       return `${baseUrl}${path}`;
     }
     // Client-side: use relative path
     return path;
   }
-
   async #fetchApi(endpoint, options = {}) {
     try {
       const isFormData = options.body instanceof FormData;
