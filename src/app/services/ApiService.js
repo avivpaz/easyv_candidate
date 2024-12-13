@@ -1,29 +1,43 @@
 // services/ApiService.js
 class ApiService {
   constructor() {
-    this.baseUrl = '/api';
+    // Use environment variable for base URL if available, otherwise use relative path
+    this.baseUrl = typeof window === 'undefined' 
+      ? `${process.env.NEXT_PUBLIC_API_URL}/api` 
+      : '/api';
   }
 
-  async #fetchApi(endpoint, options = {}) {
-      try {
-        const response = await fetch(`${this.baseUrl}${endpoint}`, options);
-        const data = await response.json();
-  
-        // If there's an error in the response but it's a valid API response
-        if (data.error) {
-          return data; // Return the error response instead of throwing
-        }
 
-        if (!response.ok) {
-          throw new Error('API request failed');
-        }
-  
+  async #fetchApi(endpoint, options = {}) {
+    try {
+      // Check if we're sending FormData
+      const isFormData = options.body instanceof FormData;
+      
+      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        ...options,
+        headers: {
+          // Only set Content-Type if we're not sending FormData
+          ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+          ...options.headers,
+        },
+      });
+      
+      const data = await response.json();
+
+      if (data.error) {
         return data;
-      } catch (error) {
-        console.error(`API Error: ${endpoint}`, error);
-        throw error;
       }
+
+      if (!response.ok) {
+        throw new Error('API request failed');
+      }
+
+      return data;
+    } catch (error) {
+      console.error(`API Error: ${endpoint}`, error);
+      throw error;
     }
+  }
   // Organization endpoints
   async getOrganizationDetails(organizationId) {
     return this.#fetchApi(`/organizations/${organizationId}`);
@@ -39,11 +53,25 @@ class ApiService {
   }
 
   async submitApplication(jobId, formData) {
-    return this.#fetchApi(`/jobs/${jobId}/apply`, {
+    const options = {
       method: 'POST',
-      body: formData
-    });
+      body: formData,
+      // No need to set headers for FormData
+    };
+    return this.#fetchApi(`/jobs/${jobId}/apply`, options);
+  }
+
+  // Static method for handling server-side calls
+   async getServerSideApi(endpoint) {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+    const response = await fetch(`${baseUrl}/api${endpoint}`);
+    return response.json();
   }
 }
 
-export default new ApiService();
+// Create a singleton instance
+const apiService = new ApiService();
+
+// Export both the instance and the class for different use cases
+export { ApiService };
+export default apiService;
