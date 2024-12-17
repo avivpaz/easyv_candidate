@@ -70,22 +70,41 @@ const OrganizationHome = ({ initialData }) => {
     <div className="min-h-screen bg-gray-50">
       <Header organizationDetails={organizationDetails} />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {/* Filters Section */}
         <div className="mb-8">
-          <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-6">
             <div className="text-sm text-gray-600">
               Found {filteredJobs.length} {filteredJobs.length === 1 ? 'position' : 'positions'}
             </div>
             
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              className={`
+                inline-flex items-center px-4 py-2 rounded-lg
+                border-2 transition-all duration-200 ease-in-out
+                hover:shadow-md group bg-white
+              `}
+              style={{ 
+                borderColor: `${organizationDetails?.brandColor}20` || '#1e293b20',
+                color: organizationDetails?.brandColor || '#1e293b'
+              }}
             >
-              <Filter className="h-5 w-5 mr-2" />
-              Filters
+              <Filter 
+                className={`h-5 w-5 mr-2 transition-transform duration-200 ${
+                  showFilters ? 'rotate-180' : ''
+                }`}
+                style={{ color: organizationDetails?.brandColor || '#1e293b' }}
+              />
+              <span className="font-medium">Filters</span>
               {Object.values(filters).some(Boolean) && (
-                <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full text-sm">
+                <span 
+                  className="ml-2 px-2 py-0.5 rounded-full text-sm"
+                  style={{ 
+                    backgroundColor: `${organizationDetails?.brandColor}15` || '#1e293b15',
+                    color: organizationDetails?.brandColor || '#1e293b'
+                  }}
+                >
                   {Object.values(filters).filter(Boolean).length}
                 </span>
               )}
@@ -101,9 +120,14 @@ const OrganizationHome = ({ initialData }) => {
                   {Object.values(filters).some(Boolean) && (
                     <button
                       onClick={clearFilters}
-                      className="text-sm text-gray-500 hover:text-gray-700 flex items-center"
+                      className={`
+                        text-sm flex items-center px-3 py-1.5 rounded-lg
+                        transition-all duration-200 ease-in-out group
+                        hover:bg-gray-50
+                      `}
+                      style={{ color: organizationDetails?.brandColor || '#1e293b' }}
                     >
-                      <XCircle className="h-4 w-4 mr-1" />
+                      <XCircle className="h-4 w-4 mr-1.5 transition-transform duration-200 group-hover:rotate-90" />
                       Clear filters
                     </button>
                   )}
@@ -113,7 +137,11 @@ const OrganizationHome = ({ initialData }) => {
                   <select
                     value={filters.location}
                     onChange={(e) => setFilters({ ...filters, location: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                    className="w-full px-3 py-2 border-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-opacity-20"
+                    style={{ 
+                      borderColor: `${organizationDetails?.brandColor}20` || '#1e293b20',
+                      focusRingColor: `${organizationDetails?.brandColor}40` || '#1e293b40'
+                    }}
                   >
                     <option value="">All Locations</option>
                     {uniqueLocations.map(location => (
@@ -124,7 +152,11 @@ const OrganizationHome = ({ initialData }) => {
                   <select
                     value={filters.workType}
                     onChange={(e) => setFilters({ ...filters, workType: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                    className="w-full px-3 py-2 border-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-opacity-20"
+                    style={{ 
+                      borderColor: `${organizationDetails?.brandColor}20` || '#1e293b20',
+                      focusRingColor: `${organizationDetails?.brandColor}40` || '#1e293b40'
+                    }}
                   >
                     <option value="">All Work Types</option>
                     {uniqueWorkTypes.map(type => (
@@ -135,7 +167,11 @@ const OrganizationHome = ({ initialData }) => {
                   <select
                     value={filters.employmentType}
                     onChange={(e) => setFilters({ ...filters, employmentType: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                    className="w-full px-3 py-2 border-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-opacity-20"
+                    style={{ 
+                      borderColor: `${organizationDetails?.brandColor}20` || '#1e293b20',
+                      focusRingColor: `${organizationDetails?.brandColor}40` || '#1e293b40'
+                    }}
                   >
                     <option value="">All Employment Types</option>
                     {uniqueEmploymentTypes.map(type => (
