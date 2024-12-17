@@ -68,8 +68,20 @@ const JobApplication = ({ initialData }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setError(null);
+  
+    // Validate submission based on type
+    if (submissionType === 'file' && !file) {
+      setError('Please upload your CV');
+      return;
+    }
+  
+    if (submissionType === 'text' && !formData.cvText.trim()) {
+      setError('Please provide information about yourself');
+      return;
+    }
+    
+    setIsSubmitting(true);
     
     const formDataToSend = new FormData();
     
@@ -78,23 +90,22 @@ const JobApplication = ({ initialData }) => {
     });
     
     formDataToSend.append('submissionType', submissionType);
-    formDataToSend.append('updates', formData.updates);
     formDataToSend.append('terms', formData.terms);
-
+  
     try {
       if (submissionType === 'file' && file) {
         formDataToSend.append('cv', file);
       } else if (submissionType === 'text' && formData.cvText) {
         formDataToSend.append('cvText', formData.cvText);
       }
-
+  
       const response = await ApiService.submitApplication(jobId, formDataToSend);
       
       if (response.error === 'cv_duplication') {
         setError('cv_duplication');
         return;
       }
-
+  
       setIsSubmitted(true);
     } catch (error) {
       setError('Failed to submit application. Please try again.');
@@ -187,23 +198,7 @@ const JobApplication = ({ initialData }) => {
 
   if (isLoading) return <LoadingState />;
 
-  if (error && error !== 'cv_duplication') {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white p-8 rounded-lg shadow-sm text-center">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Error</h2>
-          <p className="text-gray-600">{error}</p>
-          <button 
-            onClick={() => router.push('/')} 
-            className="mt-4 px-4 py-2 text-white rounded-lg transition-colors"
-            style={{ backgroundColor: organizationDetails?.brandColor || '#1e293b' }}
-          >
-            Go Back
-          </button>
-        </div>
-      </div>
-    );
-  }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -318,6 +313,21 @@ const JobApplication = ({ initialData }) => {
             ) : (
               <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                 <div className="p-6">
+                  {error && error !== 'cv_duplication' && (
+                    <div className="mb-6">
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <h3 className="text-lg font-medium text-red-800 mb-2">Error</h3>
+                        <p className="text-red-600">{error}</p>
+                        <button 
+                          onClick={() => setError(null)}
+                          className="mt-3 text-sm font-medium text-red-600 hover:text-red-500"
+                        >
+                          Try again
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                   <h2 className="text-2xl font-semibold text-gray-900 mb-8">Apply Now</h2>
                   <form onSubmit={handleSubmit} className="space-y-8">
                     <div className="space-y-4">
@@ -351,7 +361,7 @@ const JobApplication = ({ initialData }) => {
                               style={{ 
                                 accentColor: organizationDetails?.brandColor || '#1e293b'
                               }}
-                              />
+                            />
                             <span className="ml-2">Write about yourself</span>
                           </label>
                         </div>
@@ -462,84 +472,82 @@ const JobApplication = ({ initialData }) => {
                             rows="10"
                             value={formData.cvText}
                             onChange={(e) => setFormData({...formData, cvText: e.target.value})}
+                
                             placeholder="Include relevant experience, skills, and achievements..."
-                          />
-                        </div>
-                      )}
-
-                      {/* Consents and Agreements */}
-                      <div className="space-y-4 border-t border-gray-200 pt-6">
-                        {/* Job Updates Consent */}
-                     
-                        {/* Terms and Privacy Policy */}
-                        <div className="flex items-start">
-                          <div className="flex items-center h-5">
-                            <input
-                              id="terms"
-                              name="terms"
-                              type="checkbox"
-                              required
-                              checked={formData.terms}
-                              onChange={(e) => setFormData({...formData, terms: e.target.checked})}
-                              className="h-4 w-4 rounded border-gray-300 text-gray-600 transition-colors focus:ring-2 focus:ring-offset-2"
-                              style={{ 
-                                accentColor: organizationDetails?.brandColor || '#1e293b',
-                                focusRingColor: `${organizationDetails?.brandColor}40` || '#1e293b40'
-                              }}
                             />
                           </div>
-                          <div className="ml-3">
-                            <label htmlFor="terms" className="text-sm text-gray-600">
-                              I acknowledge that I have read and agree to the{' '}
-                              <a 
-                                href="https://www.rightcruiter.com/terms-of-use" 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="font-medium underline hover:text-gray-800 transition-colors"
-                                style={{ color: organizationDetails?.brandColor || '#1e293b' }}
-                              >
-                                Terms of Use
-                              </a>
-                              {' '}and{' '}
-                              <a 
-                                href="https://www.rightcruiter.com/privacy-policy" 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="font-medium underline hover:text-gray-800 transition-colors"
-                                style={{ color: organizationDetails?.brandColor || '#1e293b' }}
-                              >
-                                Privacy Policy
-                              </a>
-                              . I understand that my personal information will be processed in accordance with these policies. *
-                            </label>
+                        )}
+  
+                        {/* Consents and Agreements */}
+                        <div className="space-y-4 border-t border-gray-200 pt-6">
+                          {/* Terms and Privacy Policy */}
+                          <div className="flex items-start">
+                            <div className="flex items-center h-5">
+                              <input
+                                id="terms"
+                                name="terms"
+                                type="checkbox"
+                                required
+                                checked={formData.terms}
+                                onChange={(e) => setFormData({...formData, terms: e.target.checked})}
+                                className="h-4 w-4 rounded border-gray-300 text-gray-600 transition-colors focus:ring-2 focus:ring-offset-2"
+                                style={{ 
+                                  accentColor: organizationDetails?.brandColor || '#1e293b',
+                                  focusRingColor: `${organizationDetails?.brandColor}40` || '#1e293b40'
+                                }}
+                              />
+                            </div>
+                            <div className="ml-3">
+                              <label htmlFor="terms" className="text-sm text-gray-600">
+                                I acknowledge that I have read and agree to the{' '}
+                                <a 
+                                  href="https://www.rightcruiter.com/terms-of-use" 
+                                  target="_blank" 
+                                  rel="noopener noreferrer" 
+                                  className="font-medium underline hover:text-gray-800 transition-colors"
+                                  style={{ color: organizationDetails?.brandColor || '#1e293b' }}
+                                >
+                                  Terms of Use
+                                </a>
+                                {' '}and{' '}
+                                <a 
+                                  href="https://www.rightcruiter.com/privacy-policy" 
+                                  target="_blank" 
+                                  rel="noopener noreferrer" 
+                                  className="font-medium underline hover:text-gray-800 transition-colors"
+                                  style={{ color: organizationDetails?.brandColor || '#1e293b' }}
+                                >
+                                  Privacy Policy
+                                </a>
+                                . I understand that my personal information will be processed in accordance with these policies. *
+                              </label>
+                            </div>
                           </div>
                         </div>
-
                       </div>
-                    </div>
-
-                    {error && (
-                      <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
-                        {error}
-                      </div>
-                    )}
-
-                    <button
-                      type="submit"
-                      className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white transition-colors hover:opacity-90"
-                      style={{ backgroundColor: organizationDetails?.brandColor || '#1e293b' }}
-                    >
-                      Submit Application
-                    </button>
-                  </form>
+  
+                      {error && (
+                        <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
+                          {error}
+                        </div>
+                      )}
+  
+                      <button
+                        type="submit"
+                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white transition-colors hover:opacity-90"
+                        style={{ backgroundColor: organizationDetails?.brandColor || '#1e293b' }}
+                      >
+                        Submit Application
+                      </button>
+                    </form>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
-      </main>
-    </div>
-  );
-};
-
-export default JobApplication;
+        </main>
+      </div>
+    );
+  };
+  
+  export default JobApplicationForm;
