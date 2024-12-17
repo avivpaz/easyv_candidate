@@ -6,9 +6,9 @@ import {
   Calendar, 
   MapPin, 
   Briefcase, 
-  Search, 
   Filter,
-  XCircle
+  XCircle,
+  Search
 } from 'lucide-react';
 import LoadingState from '@/app/components/loadingState';
 import Header from './header';
@@ -18,7 +18,6 @@ const OrganizationHome = ({ initialData }) => {
   const [jobs] = useState(initialData.jobs);
   const [isLoading, setIsLoading] = useState(!initialData);
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
     location: '',
     workType: '',
@@ -36,16 +35,11 @@ const OrganizationHome = ({ initialData }) => {
 
   const filterJobs = (jobs) => {
     return jobs.filter(job => {
-      const matchesSearch = 
-        job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.location.toLowerCase().includes(searchTerm.toLowerCase());
-
       const matchesLocation = !filters.location || job.location.includes(filters.location);
       const matchesWorkType = !filters.workType || job.workType === filters.workType;
       const matchesEmploymentType = !filters.employmentType || job.employmentType === filters.employmentType;
 
-      return matchesSearch && matchesLocation && matchesWorkType && matchesEmploymentType;
+      return matchesLocation && matchesWorkType && matchesEmploymentType;
     });
   };
 
@@ -77,23 +71,16 @@ const OrganizationHome = ({ initialData }) => {
       <Header organizationDetails={organizationDetails} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Search and Filters Section */}
+        {/* Filters Section */}
         <div className="mb-8">
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <div className="relative flex-1">
-              <input
-                type="text"
-                placeholder="Search jobs by title, description, or location..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <div className="flex justify-between items-center mb-6">
+            <div className="text-sm text-gray-600">
+              Found {filteredJobs.length} {filteredJobs.length === 1 ? 'position' : 'positions'}
             </div>
             
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="inline-flex items-center px-4 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
             >
               <Filter className="h-5 w-5 mr-2" />
               Filters
@@ -159,10 +146,6 @@ const OrganizationHome = ({ initialData }) => {
               </div>
             </div>
           )}
-
-          <div className="text-sm text-gray-600">
-            Found {filteredJobs.length} {filteredJobs.length === 1 ? 'position' : 'positions'}
-          </div>
         </div>
 
         {/* Job Listings */}
@@ -171,7 +154,7 @@ const OrganizationHome = ({ initialData }) => {
             <div className="bg-white rounded-lg p-12 text-center">
               <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900">No matching positions found</h3>
-              <p className="mt-2 text-gray-500">Try adjusting your search criteria or filters</p>
+              <p className="mt-2 text-gray-500">Try adjusting your filters</p>
             </div>
           ) : (
             filteredJobs.map((job) => (
@@ -184,8 +167,9 @@ const OrganizationHome = ({ initialData }) => {
                   <div className="space-y-4">
                     <div>
                       <h2
-                                            style={{ color: organizationDetails?.brandColor || '#1e293b' }}
-                      className="text-xl font-semibold text-gray-900 group-hover:text-blue-600">
+                        style={{ color: organizationDetails?.brandColor || '#1e293b' }}
+                        className="text-xl font-semibold text-gray-900 group-hover:text-blue-600"
+                      >
                         {job.title}
                       </h2>
                       <p className="mt-2 text-gray-600 line-clamp-2">
