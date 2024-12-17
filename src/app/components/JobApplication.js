@@ -473,81 +473,81 @@ const JobApplication = ({ initialData }) => {
                             value={formData.cvText}
                             onChange={(e) => setFormData({...formData, cvText: e.target.value})}
                 
-                            placeholder="Include relevant experience, skills, and achievements..."
+                placeholder="Include relevant experience, skills, and achievements..."
+                          />
+                        </div>
+                      )}
+
+                      {/* Consents and Agreements */}
+                      <div className="space-y-4 border-t border-gray-200 pt-6">
+                        {/* Terms and Privacy Policy */}
+                        <div className="flex items-start">
+                          <div className="flex items-center h-5">
+                            <input
+                              id="terms"
+                              name="terms"
+                              type="checkbox"
+                              required
+                              checked={formData.terms}
+                              onChange={(e) => setFormData({...formData, terms: e.target.checked})}
+                              className="h-4 w-4 rounded border-gray-300 text-gray-600 transition-colors focus:ring-2 focus:ring-offset-2"
+                              style={{ 
+                                accentColor: organizationDetails?.brandColor || '#1e293b',
+                                focusRingColor: `${organizationDetails?.brandColor}40` || '#1e293b40'
+                              }}
                             />
                           </div>
-                        )}
-  
-                        {/* Consents and Agreements */}
-                        <div className="space-y-4 border-t border-gray-200 pt-6">
-                          {/* Terms and Privacy Policy */}
-                          <div className="flex items-start">
-                            <div className="flex items-center h-5">
-                              <input
-                                id="terms"
-                                name="terms"
-                                type="checkbox"
-                                required
-                                checked={formData.terms}
-                                onChange={(e) => setFormData({...formData, terms: e.target.checked})}
-                                className="h-4 w-4 rounded border-gray-300 text-gray-600 transition-colors focus:ring-2 focus:ring-offset-2"
-                                style={{ 
-                                  accentColor: organizationDetails?.brandColor || '#1e293b',
-                                  focusRingColor: `${organizationDetails?.brandColor}40` || '#1e293b40'
-                                }}
-                              />
-                            </div>
-                            <div className="ml-3">
-                              <label htmlFor="terms" className="text-sm text-gray-600">
-                                I acknowledge that I have read and agree to the{' '}
-                                <a 
-                                  href="https://www.rightcruiter.com/terms-of-use" 
-                                  target="_blank" 
-                                  rel="noopener noreferrer" 
-                                  className="font-medium underline hover:text-gray-800 transition-colors"
-                                  style={{ color: organizationDetails?.brandColor || '#1e293b' }}
-                                >
-                                  Terms of Use
-                                </a>
-                                {' '}and{' '}
-                                <a 
-                                  href="https://www.rightcruiter.com/privacy-policy" 
-                                  target="_blank" 
-                                  rel="noopener noreferrer" 
-                                  className="font-medium underline hover:text-gray-800 transition-colors"
-                                  style={{ color: organizationDetails?.brandColor || '#1e293b' }}
-                                >
-                                  Privacy Policy
-                                </a>
-                                . I understand that my personal information will be processed in accordance with these policies. *
-                              </label>
-                            </div>
+                          <div className="ml-3">
+                            <label htmlFor="terms" className="text-sm text-gray-600">
+                              I acknowledge that I have read and agree to the{' '}
+                              <a 
+                                href="https://www.rightcruiter.com/terms-of-use" 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="font-medium underline hover:text-gray-800 transition-colors"
+                                style={{ color: organizationDetails?.brandColor || '#1e293b' }}
+                              >
+                                Terms of Use
+                              </a>
+                              {' '}and{' '}
+                              <a 
+                                href="https://www.rightcruiter.com/privacy-policy" 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="font-medium underline hover:text-gray-800 transition-colors"
+                                style={{ color: organizationDetails?.brandColor || '#1e293b' }}
+                              >
+                                Privacy Policy
+                              </a>
+                              . I understand that my personal information will be processed in accordance with these policies. *
+                            </label>
                           </div>
                         </div>
                       </div>
-  
-                      {error && (
-                        <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
-                          {error}
-                        </div>
-                      )}
-  
-                      <button
-                        type="submit"
-                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white transition-colors hover:opacity-90"
-                        style={{ backgroundColor: organizationDetails?.brandColor || '#1e293b' }}
-                      >
-                        Submit Application
-                      </button>
-                    </form>
-                  </div>
+                    </div>
+
+                    {error && (
+                      <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
+                        {error}
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white transition-colors hover:opacity-90"
+                      style={{ backgroundColor: organizationDetails?.brandColor || '#1e293b' }}
+                    >
+                      Submit Application
+                    </button>
+                  </form>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
-        </main>
-      </div>
-    );
-  };
-  
-  export default JobApplicationForm;
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default JobApplication;
