@@ -99,10 +99,7 @@ const JobApplication = ({ initialData }) => {
     try {
       if (submissionType === 'file' && file) {
         formDataToSend.append('cv', file);
-      } else if (submissionType === 'text' && formData.cvText) {
-        formDataToSend.append('cvText', formData.cvText);
-      }
-  
+      } 
       const response = await ApiService.submitApplication(jobId, formDataToSend);
       
       if (response.error === 'cv_duplication') {
