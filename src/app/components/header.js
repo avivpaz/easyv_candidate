@@ -45,13 +45,13 @@ const Header = ({ organizationDetails }) => {
         <div className="bg-white rounded-2xl shadow-lg p-6 flex flex-col sm:flex-row gap-6 items-start">
           {/* Logo Section */}
           {organizationDetails?.logoUrl ? (
-            <div className="w-20 h-20 bg-white rounded-xl shadow-md border border-slate-100 p-3 flex items-center justify-center shrink-0">
-              <img 
-                src={organizationDetails.logoUrl} 
-                alt={organizationDetails?.name}
-                className="w-full h-full object-contain"
-              />
-            </div>
+            <div className="w-14 h-14 bg-white rounded-xl shadow-md  flex items-center justify-center shrink-0 overflow-hidden">
+            <img 
+              src={organizationDetails.logoUrl} 
+              alt={organizationDetails?.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
           ) : (
             <div 
               className="w-20 h-20 rounded-xl shadow-md flex items-center justify-center shrink-0"

@@ -328,20 +328,7 @@ const JobApplication = ({ initialData }) => {
             ) : (
               <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                 <div className="p-6">
-                  {error && error !== 'cv_duplication' && (
-                    <div className="mb-6">
-                      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                        <h3 className="text-lg font-medium text-red-800 mb-2">Error</h3>
-                        <p className="text-red-600">{error}</p>
-                        <button 
-                          onClick={() => setError(null)}
-                          className="mt-3 text-sm font-medium text-red-600 hover:text-red-500"
-                        >
-                          Try again
-                        </button>
-                      </div>
-                    </div>
-                  )}
+          
 
                   <h2 className="text-2xl font-semibold text-gray-900 mb-8">Apply Now</h2>
                   <form onSubmit={handleSubmit} className="space-y-8">
