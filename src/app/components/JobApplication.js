@@ -338,7 +338,7 @@ const JobApplication = ({ initialData }) => {
                         <label className="block text-sm font-medium text-gray-700">
                           Choose how you'd like to apply:
                         </label>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-2 md:gap-4">
                           {/* Upload CV Option */}
                           <label 
                             className={`relative flex flex-col items-center p-4 cursor-pointer rounded-lg border-2 transition-all ${
