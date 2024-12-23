@@ -86,8 +86,8 @@ const JobApplication = ({ initialData }) => {
         setError('Please upload a PDF, DOC, or DOCX file');
         return;
       }
-      if (droppedFile.size > 10 * 1024 * 1024) {
-        setError('File size should be less than 10MB');
+      if (droppedFile.size > 5 * 1024 * 1024) {
+        setError('File size should be less than 5MB');
         return;
       }
     
@@ -149,8 +149,8 @@ const JobApplication = ({ initialData }) => {
         setError('Please upload a PDF file');
         return;
       }
-      if (droppedFile.size > 10 * 1024 * 1024) {
-        setError('File size should be less than 10MB');
+      if (droppedFile.size > 5 * 1024 * 1024) {
+        setError('File size should be less than 5MB');
         return;
       }
       setFile(droppedFile);
@@ -552,7 +552,7 @@ const JobApplication = ({ initialData }) => {
                             </label>
                             <p className="pl-1">or drag and drop</p>
                           </div>
-                          <p className="text-xs text-gray-500">PDF, DOC or DOCX up to 10MB</p>
+                          <p className="text-xs text-gray-500">PDF, DOC or DOCX up to 5MB</p>
                         </div>
                       ) : (
                             <div className="w-full">
