@@ -142,7 +142,7 @@ const JobApplication = ({ initialData }) => {
     
       setIsSubmitted(true);
     } catch (error) {
-      if (error.Error === 'cv_duplication') {  // This line is problematic
+      if (error.message === 'cv_duplication') {  // This line is problematic
         setError('cv_duplication');
       }
       else {
