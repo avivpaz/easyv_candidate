@@ -37,6 +37,7 @@ const JobApplication = ({ initialData }) => {
   const [filePreview, setFilePreview] = useState(null);
   const [submissionType, setSubmissionType] = useState('file');
   const [dragActive, setDragActive] = useState(false);
+  const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
 
   const params = useParams();
   const jobId = params.id;
@@ -72,27 +73,46 @@ const JobApplication = ({ initialData }) => {
     fetchData();
   }, [jobId, organizationId, initialData]);
 
+  const validateFile = (file) => {
+    const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    
+    if (!validTypes.includes(file.type)) {
+      return {
+        isValid: false,
+        error: 'Please upload a PDF, DOC, or DOCX file'
+      };
+    }
+    
+    if (file.size > maxSize) {
+      return {
+        isValid: false,
+        error: 'File size should be less than 5MB'
+      };
+    }
+    
+    return {
+      isValid: true,
+      error: null
+    };
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
   
-    // Validate submission based on type
     if (submissionType === 'file') {
-      if (!file){
+      if (!file) {
         setError('Please upload your CV');
         return;
       }
-      if (!validTypes.includes(droppedFile.type)) {
-        setError('Please upload a PDF, DOC, or DOCX file');
+      const validation = validateFile(file);
+      if (!validation.isValid) {
+        setError(validation.error);
         return;
       }
-      if (droppedFile.size > 5 * 1024 * 1024) {
-        setError('File size should be less than 5MB');
-        return;
-      }
-    
     }
-  
+    
     if (submissionType === 'text' && !formData.cvText.trim()) {
       setError('Please provide information about yourself');
       return;
@@ -138,48 +158,45 @@ const JobApplication = ({ initialData }) => {
     }
   };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
+ const handleDrop = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  setDragActive(false);
 
-    const droppedFile = e.dataTransfer.files?.[0];
-    if (droppedFile) {
-      if (droppedFile.type !== 'application/pdf') {
-        setError('Please upload a PDF file');
-        return;
-      }
-      if (droppedFile.size > 5 * 1024 * 1024) {
-        setError('File size should be less than 5MB');
-        return;
-      }
-      setFile(droppedFile);
-      setFilePreview({
-        name: droppedFile.name,
-        size: (droppedFile.size / 1024 / 1024).toFixed(2)
-      });
-      setError(null);
+  const droppedFile = e.dataTransfer.files?.[0];
+  if (droppedFile) {
+    const validation = validateFile(droppedFile);
+    if (!validation.isValid) {
+      setError(validation.error);
+      return;
     }
-  };
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      if (selectedFile.type !== 'application/pdf') {
-        setError('Please upload a PDF file');
-        return;
-      }
-      if (selectedFile.size > 10 * 1024 * 1024) {
-        setError('File size should be less than 10MB');
-        return;
-      }
-      setFile(selectedFile);
-      setFilePreview({
-        name: selectedFile.name,
-        size: (selectedFile.size / 1024 / 1024).toFixed(2)
-      });
-      setError(null);
+    
+    setFile(droppedFile);
+    setFilePreview({
+      name: droppedFile.name,
+      size: (droppedFile.size / 1024 / 1024).toFixed(2)
+    });
+    setError(null);
+  }
+};
+// Update the handleFileChange function
+const handleFileChange = (e) => {
+  const selectedFile = e.target.files?.[0];
+  if (selectedFile) {
+    const validation = validateFile(selectedFile);
+    if (!validation.isValid) {
+      setError(validation.error);
+      return;
     }
-  };
+    
+    setFile(selectedFile);
+    setFilePreview({
+      name: selectedFile.name,
+      size: (selectedFile.size / 1024 / 1024).toFixed(2)
+    });
+    setError(null);
+  }
+};
 
   const handleRemoveFile = () => {
     setFile(null);
@@ -583,14 +600,18 @@ const JobApplication = ({ initialData }) => {
                                   </div>
                                 </div>
                                 <div className="flex space-x-4">
-                                  <button
-                                    type="button"
-                                    onClick={() => document.querySelector('input[type="file"]').click()}
-                                    className="text-sm font-medium transition-colors"
+                                <label
+                                    className="text-sm font-medium transition-colors cursor-pointer"
                                     style={{ color: organizationDetails?.brandColor || '#1e293b' }}
                                   >
                                     Change
-                                  </button>
+                                    <input
+                                      type="file"
+                                      className="sr-only"
+                                      onChange={handleFileChange}
+                                      accept=".pdf,.doc,.docx"
+                                    />
+                                  </label>
                                   <button
                                     type="button"
                                     onClick={handleRemoveFile}
