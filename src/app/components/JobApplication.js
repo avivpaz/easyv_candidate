@@ -148,6 +148,10 @@ const JobApplication = ({ initialData }) => {
     }
   };
 
+  const handleSubmissionTypeChange = (newType) => {
+    setSubmissionType(newType);
+  };
+  
   const handleDrag = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -397,128 +401,117 @@ const handleFileChange = (e) => {
                   <form onSubmit={handleSubmit} className="space-y-8">
                     <div className="space-y-4">
                       {/* Enhanced Submission Type Selector */}
-                      <div className="space-y-3">
-                        <label className="block text-sm font-medium text-gray-700">
-                          Choose how you'd like to apply:
-                        </label>
-                        <div className="grid grid-cols-2 gap-2 md:gap-4">
-                          {/* Upload CV Option */}
-                          <label 
-                            className={`relative flex flex-col items-center p-4 cursor-pointer rounded-lg border-2 transition-all ${
-                              submissionType === 'file' 
-                                ? 'border-opacity-100 bg-opacity-10' 
-                                : 'border-gray-200 hover:border-opacity-50'
-                            }`}
-                            style={{ 
-                              borderColor: submissionType === 'file' ? organizationDetails?.brandColor || '#1e293b' : undefined,
-                              backgroundColor: submissionType === 'file' ? `${organizationDetails?.brandColor}10` || '#1e293b10' : undefined
-                            }}
-                          >
-                            <input
-                              type="radio"
-                              className="sr-only"
-                              name="submissionType"
-                              value="file"
-                              checked={submissionType === 'file'}
-                              onChange={(e) => setSubmissionType(e.target.value)}
-                            />
-                            <div 
-                              className="w-12 h-12 mb-3 rounded-full flex items-center justify-center"
-                              style={{ 
-                                backgroundColor: `${organizationDetails?.brandColor}20` || '#1e293b20'
-                              }}
-                            >
-                              <svg
-                                className="w-6 h-6"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke={organizationDetails?.brandColor || '#1e293b'}
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                />
-                              </svg>
-                            </div>
-                            <div className="text-center">
-                              <p className="text-base font-medium text-gray-900">Upload CV</p>
-                              <p className="text-sm text-gray-500">Submit your existing CV file</p>
-                            </div>
-                            {submissionType === 'file' && (
-                              <div 
-                                className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center"
-                                style={{ 
-                                  backgroundColor: organizationDetails?.brandColor || '#1e293b'
-                                }}
-                              >
-                                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                              </div>
-                            )}
-                          </label>
+                 {/* Replace the Enhanced Submission Type Selector section with this code */}
+<div className="space-y-3">
+  <label className="block text-sm font-medium text-gray-700">
+    Choose how you'd like to apply:
+  </label>
+  <div className="grid grid-cols-2 gap-2 md:gap-4">
+    {/* Upload CV Option */}
+    <button
+      type="button"
+      onClick={() => setSubmissionType('file')}
+      className={`relative flex flex-col items-center p-4 rounded-lg border-2 transition-all ${
+        submissionType === 'file' 
+          ? 'border-opacity-100 bg-opacity-10' 
+          : 'border-gray-200 hover:border-opacity-50'
+      }`}
+      style={{ 
+        borderColor: submissionType === 'file' ? organizationDetails?.brandColor || '#1e293b' : undefined,
+        backgroundColor: submissionType === 'file' ? `${organizationDetails?.brandColor}10` || '#1e293b10' : undefined
+      }}
+    >
+      <div 
+        className="w-12 h-12 mb-3 rounded-full flex items-center justify-center"
+        style={{ 
+          backgroundColor: `${organizationDetails?.brandColor}20` || '#1e293b20'
+        }}
+      >
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke={organizationDetails?.brandColor || '#1e293b'}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+          />
+        </svg>
+      </div>
+      <div className="text-center">
+        <p className="text-base font-medium text-gray-900">Upload CV</p>
+        <p className="text-sm text-gray-500">Submit your existing CV file</p>
+      </div>
+      {submissionType === 'file' && (
+        <div 
+          className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center"
+          style={{ 
+            backgroundColor: organizationDetails?.brandColor || '#1e293b'
+          }}
+        >
+          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+          </svg>
+        </div>
+      )}
+    </button>
 
-                          {/* Write About Yourself Option */}
-                          <label 
-                            className={`relative flex flex-col items-center p-4 cursor-pointer rounded-lg border-2 transition-all ${
-                              submissionType === 'text' 
-                                ? 'border-opacity-100 bg-opacity-10' 
-                                : 'border-gray-200 hover:border-opacity-50'
-                            }`}
-                            style={{ 
-                              borderColor: submissionType === 'text' ? organizationDetails?.brandColor || '#1e293b' : undefined,
-                              backgroundColor: submissionType === 'text' ? `${organizationDetails?.brandColor}10` || '#1e293b10' : undefined
-                            }}
-                          >
-                            <input
-                              type="radio"
-                              className="sr-only"
-                              name="submissionType"
-                              value="text"
-                              checked={submissionType === 'text'}
-                              onChange={(e) => setSubmissionType(e.target.value)}
-                            />
-                            <div 
-                              className="w-12 h-12 mb-3 rounded-full flex items-center justify-center"
-                              style={{ 
-                                backgroundColor: `${organizationDetails?.brandColor}20` || '#1e293b20'
-                              }}
-                            >
-                              <svg
-                                className="w-6 h-6"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke={organizationDetails?.brandColor || '#1e293b'}
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                                />
-                              </svg>
-                            </div>
-                            <div className="text-center">
-                              <p className="text-base font-medium text-gray-900">Write About Yourself</p>
-                              <p className="text-sm text-gray-500">Create your application here</p>
-                            </div>
-                            {submissionType === 'text' && (
-                              <div 
-                                className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center"
-                                style={{ 
-                                  backgroundColor: organizationDetails?.brandColor || '#1e293b'
-                                }}
-                              >
-                                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                              </div>
-                            )}
-                          </label>
-                        </div>
-                      </div>
+    {/* Write About Yourself Option */}
+    <button
+      type="button"
+      onClick={() => setSubmissionType('text')}
+      className={`relative flex flex-col items-center p-4 rounded-lg border-2 transition-all ${
+        submissionType === 'text' 
+          ? 'border-opacity-100 bg-opacity-10' 
+          : 'border-gray-200 hover:border-opacity-50'
+      }`}
+      style={{ 
+        borderColor: submissionType === 'text' ? organizationDetails?.brandColor || '#1e293b' : undefined,
+        backgroundColor: submissionType === 'text' ? `${organizationDetails?.brandColor}10` || '#1e293b10' : undefined
+      }}
+    >
+      <div 
+        className="w-12 h-12 mb-3 rounded-full flex items-center justify-center"
+        style={{ 
+          backgroundColor: `${organizationDetails?.brandColor}20` || '#1e293b20'
+        }}
+      >
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke={organizationDetails?.brandColor || '#1e293b'}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+          />
+        </svg>
+      </div>
+      <div className="text-center">
+        <p className="text-base font-medium text-gray-900">Write About Yourself</p>
+        <p className="text-sm text-gray-500">Create your application here</p>
+      </div>
+      {submissionType === 'text' && (
+        <div 
+          className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center"
+          style={{ 
+            backgroundColor: organizationDetails?.brandColor || '#1e293b'
+          }}
+        >
+          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+          </svg>
+        </div>
+      )}
+    </button>
+  </div>
+</div>
 
                       {submissionType === 'file' ? (
                     <div 
