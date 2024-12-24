@@ -139,16 +139,15 @@ const JobApplication = ({ initialData }) => {
         setError('cv_duplication');
         return;
       }
-  
+    
       setIsSubmitted(true);
     } catch (error) {
-      if (response.error === 'cv_duplication') {
+      if (error.Error === 'cv_duplication') {  // This line is problematic
         setError('cv_duplication');
       }
-      else
-        {
-          setError('Failed to submit application. Please try again.');
-        }
+      else {
+        setError('Failed to submit application. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }
