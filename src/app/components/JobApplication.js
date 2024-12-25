@@ -277,7 +277,7 @@ const handleFileChange = (e) => {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Header organizationDetails={organizationDetails} />
       <main className="max-w-7xl mx-auto px-4 py-4">
-      <div className="mb-8">
+      {/* <div className="mb-8">
           <Link 
             href={`/${organizationId}`}
             className={`
@@ -301,7 +301,7 @@ const handleFileChange = (e) => {
               View All Jobs
             </span>
           </Link>
-        </div>
+        </div> */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Job Details Sidebar */}
           <div className="lg:col-span-1">
