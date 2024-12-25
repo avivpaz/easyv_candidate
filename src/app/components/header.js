@@ -1,8 +1,10 @@
-import { Calendar, MapPin, Check, Building2, Globe, Linkedin, Share2 } from 'lucide-react';
+import { Calendar, MapPin, Check, Building2, Globe, Linkedin, Share2, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 
 const Header = ({ organizationDetails }) => {
     const [copied, setCopied] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const MAX_DESCRIPTION_LENGTH = 230;
 
     const handleShare = async () => {
       try {
@@ -13,127 +15,153 @@ const Header = ({ organizationDetails }) => {
         console.error('Failed to copy URL:', err);
       }
     };
+
+    const isDescriptionLong = organizationDetails?.description?.length > MAX_DESCRIPTION_LENGTH;
+    
+    const displayDescription = isDescriptionLong && !isExpanded
+      ? `${organizationDetails.description.slice(0, MAX_DESCRIPTION_LENGTH)}...`
+      : organizationDetails.description;
   
-  return (
-    <header className="relative">
-      {/* Banner Image */}
-      <div className="w-full h-40 relative overflow-hidden">
-        {organizationDetails?.bannerUrl && !bannerError ? (
-          <>
-            <div className="absolute inset-0" style={{ 
-              backgroundColor: organizationDetails?.brandColor || '#1e293b',
-              opacity: 0.9 
-            }} />
-            <img 
-              src={organizationDetails.bannerUrl}
-              alt="Company banner"
-              className="w-full h-full object-cover"
-              onError={() => setBannerError(true)}
-            />
-          </>
-        ) : (
-          <div className="absolute inset-0" style={{ backgroundColor: organizationDetails?.brandColor || '#1e293b' }}>
-            <div className="absolute inset-0 opacity-20">
-              <div className="absolute inset-0 bg-grid-white/[0.2] bg-[size:20px_20px]" />
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-          </div>
-        )}
-      </div>
-      {/* Company Info Card - Overlapping Banner */}
-      <div className="max-w-7xl mx-auto px-6 relative -mt-24 z-20 mb-8">
-        <div className="bg-white rounded-2xl shadow-lg p-6 flex flex-col sm:flex-row gap-6 items-start">
-          {/* Logo Section */}
-          {organizationDetails?.logoUrl ? (
-            <div className="w-14 h-14 bg-white rounded-xl shadow-md  flex items-center justify-center shrink-0 overflow-hidden">
-            <img 
-              src={organizationDetails.logoUrl} 
-              alt={organizationDetails?.name}
-              className="w-full h-full object-cover"
-            />
-          </div>
+    return (
+      <header className="relative">
+        {/* Banner Image */}
+        <div className="w-full h-40 relative overflow-hidden">
+          {organizationDetails?.bannerUrl && !bannerError ? (
+            <>
+              <div className="absolute inset-0" style={{ 
+                backgroundColor: organizationDetails?.brandColor || '#1e293b',
+                opacity: 0.9 
+              }} />
+              <img 
+                src={organizationDetails.bannerUrl}
+                alt="Company banner"
+                className="w-full h-full object-cover"
+                onError={() => setBannerError(true)}
+              />
+            </>
           ) : (
-            <div 
-              className="w-20 h-20 rounded-xl shadow-md flex items-center justify-center shrink-0"
-              style={{ backgroundColor: organizationDetails?.brandColor || '#1e293b' }}
-            >
-              <span className="text-3xl font-bold text-white">
-                {organizationDetails?.name?.charAt(0)}
-              </span>
+            <div className="absolute inset-0" style={{ backgroundColor: organizationDetails?.brandColor || '#1e293b' }}>
+              <div className="absolute inset-0 opacity-20">
+                <div className="absolute inset-0 bg-grid-white/[0.2] bg-[size:20px_20px]" />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
             </div>
           )}
-
-          {/* Company Info Section */}
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900">
-                  {organizationDetails?.name}
-                </h1>
-                {organizationDetails?.description && (
-                  <p className="mt-2 text-slate-600 text-base leading-relaxed max-w-2xl">
-                    {organizationDetails.description}
-                  </p>
-                )}
+        </div>
+        {/* Company Info Card - Overlapping Banner */}
+        <div className="max-w-7xl mx-auto px-6 relative -mt-24 z-20 mb-8">
+          <div className="bg-white rounded-2xl shadow-lg p-6 flex flex-col sm:flex-row gap-6 items-start">
+            {/* Logo Section */}
+            {organizationDetails?.logoUrl ? (
+              <div className="w-14 h-14 bg-white rounded-xl shadow-md flex items-center justify-center shrink-0 overflow-hidden">
+                <img 
+                  src={organizationDetails.logoUrl} 
+                  alt={organizationDetails?.name}
+                  className="w-full h-full object-cover"
+                />
               </div>
-              
-              {/* Action Buttons */}
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <button 
-                    onClick={handleShare}
-                    className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 
-                      ${copied 
-                        ? 'bg-green-100 text-green-700' 
-                        : 'text-white hover:opacity-90'}`}
-                    style={{ backgroundColor: copied ? undefined : organizationDetails?.brandColor || '#1e293b' }}
-                  >
-                    {copied ? (
-                      <>
-                        <Check className="h-4 w-4 mr-2" />
-                        Copied!
-                      </>
-                    ) : (
-                      <>
-                        <Share2 className="h-4 w-4 mr-2" />
-                        Share
-                      </>
-                    )}
-                  </button>
+            ) : (
+              <div 
+                className="w-20 h-20 rounded-xl shadow-md flex items-center justify-center shrink-0"
+                style={{ backgroundColor: organizationDetails?.brandColor || '#1e293b' }}
+              >
+                <span className="text-3xl font-bold text-white">
+                  {organizationDetails?.name?.charAt(0)}
+                </span>
+              </div>
+            )}
+
+            {/* Company Info Section */}
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-4 justify-between">
+                <div>
+                  <h1 className="text-2xl font-bold text-slate-900">
+                    {organizationDetails?.name}
+                  </h1>
+                  {organizationDetails?.description && (
+                    <div className="mt-2">
+                      <p className="text-slate-600 text-base leading-relaxed max-w-2xl">
+                        {displayDescription}
+                      </p>
+                      {isDescriptionLong && (
+                        <button
+                          onClick={() => setIsExpanded(!isExpanded)}
+                          className="mt-2 text-sm font-medium text-slate-700 hover:text-slate-900 inline-flex items-center gap-1"
+                        >
+                          {isExpanded ? (
+                            <>
+                              Show less
+                              <ChevronUp className="h-4 w-4" />
+                            </>
+                          ) : (
+                            <>
+                              Show more
+                              <ChevronDown className="h-4 w-4" />
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+                
+                {/* Action Buttons */}
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <button 
+                      onClick={handleShare}
+                      className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 
+                        ${copied 
+                          ? 'bg-green-100 text-green-700' 
+                          : 'text-white hover:opacity-90'}`}
+                      style={{ backgroundColor: copied ? undefined : organizationDetails?.brandColor || '#1e293b' }}
+                    >
+                      {copied ? (
+                        <>
+                          <Check className="h-4 w-4 mr-2" />
+                          Copied!
+                        </>
+                      ) : (
+                        <>
+                          <Share2 className="h-4 w-4 mr-2" />
+                          Share
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Company Details */}
-            <div className="mt-6 flex flex-wrap gap-6 text-sm text-slate-600">
-              {organizationDetails?.website && (
-                <a 
-                  href={organizationDetails.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 hover:text-blue-600 transition-colors"
-                >
-                  <Globe className="h-4 w-4" />
-                  <span>Website</span>
-                </a>
-              )}
-              {organizationDetails?.linkedinUrl && (
-                <a 
-                  href={organizationDetails.linkedinUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 hover:text-blue-600 transition-colors"
-                >
-                  <Linkedin className="h-4 w-4" />
-                  <span>Linkedin</span>
-                </a>
-              )}
+              {/* Company Details */}
+              <div className="mt-6 flex flex-wrap gap-6 text-sm text-slate-600">
+                {organizationDetails?.website && (
+                  <a 
+                    href={organizationDetails.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 hover:text-blue-600 transition-colors"
+                  >
+                    <Globe className="h-4 w-4" />
+                    <span>Website</span>
+                  </a>
+                )}
+                {organizationDetails?.linkedinUrl && (
+                  <a 
+                    href={organizationDetails.linkedinUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 hover:text-blue-600 transition-colors"
+                  >
+                    <Linkedin className="h-4 w-4" />
+                    <span>Linkedin</span>
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </header>
-  );
+      </header>
+    );
 };
 
 export default Header;
