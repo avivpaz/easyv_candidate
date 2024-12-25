@@ -4,7 +4,7 @@ import { useState } from 'react';
 const Header = ({ organizationDetails }) => {
     const [copied, setCopied] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
-    const MAX_DESCRIPTION_LENGTH = 280;
+    const MAX_DESCRIPTION_LENGTH = 230;
 
     const handleShare = async () => {
       try {
@@ -55,11 +55,11 @@ const Header = ({ organizationDetails }) => {
               <div className="flex items-center gap-4">
                 {/* Logo */}
                 {organizationDetails?.logoUrl ? (
-                  <div className="max-w-40 h-14 bg-white flex items-center justify-center shrink-0 overflow-hidden p-2">
+                  <div className="w-14 h-14 bg-white rounded-xl shadow-md flex items-center justify-center shrink-0 overflow-hidden">
                     <img 
                       src={organizationDetails.logoUrl} 
                       alt={organizationDetails?.name}
-                      className="h-full w-auto object-contain"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                 ) : (
@@ -109,7 +109,7 @@ const Header = ({ organizationDetails }) => {
             {/* Description Section */}
             {organizationDetails?.description && (
               <div className="mt-4">
-                <p className="text-slate-600 text-base leading-relaxed max-w-4xl">
+                <p className="text-slate-600 text-base leading-relaxed max-w-2xl">
                   {displayDescription}
                 </p>
                 {isDescriptionLong && (
