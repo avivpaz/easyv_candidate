@@ -318,10 +318,12 @@ const handleFileChange = (e) => {
                   </div>
 
                   <div className="grid grid-cols-1 gap-3">
+                  {jobDetails.location && (
                     <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
                       <MapPin className="h-4 w-4" style={{ color: organizationDetails?.brandColor || '#1e293b' }}/>
                       <span className="text-sm text-gray-700 capitalize">{jobDetails.location}</span>
                     </div>
+                  )}
                     <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
                       <Clock className="h-4 w-4" style={{ color: organizationDetails?.brandColor || '#1e293b' }}/>
                       <span className="text-sm text-gray-700 capitalize">{jobDetails.workType}</span>
