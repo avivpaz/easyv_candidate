@@ -4,7 +4,7 @@ import { useState } from 'react';
 const Header = ({ organizationDetails }) => {
     const [copied, setCopied] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
-    const MAX_DESCRIPTION_LENGTH = 230;
+    const MAX_DESCRIPTION_LENGTH = 260;
 
     const handleShare = async () => {
       try {
