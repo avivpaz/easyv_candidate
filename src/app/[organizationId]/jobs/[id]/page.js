@@ -41,7 +41,7 @@ export async function generateMetadata({ params }) {
         description: jobDetails.description,
         openGraph: {
             title: `${jobDetails.title} at ${organizationDetails.name}`,
-            description: `${jobDetails.workType} ${jobDetails.employmentType} position in ${jobDetails.location}. Required Skills: ${jobDetails.requiredSkills.join(', ')}`,
+            description: `${jobDetails.workType?.toLowerCase() === 'onsite' ? 'In Office' : jobDetails.workType}< ${jobDetails.employmentType} position in ${jobDetails.location}. Required Skills: ${jobDetails.requiredSkills.join(', ')}`,
             images: [
                 {
                     url: organizationDetails.logoUrl || '/og-image.jpg',

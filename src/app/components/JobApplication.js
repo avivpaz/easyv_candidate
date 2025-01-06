@@ -326,7 +326,7 @@ const handleFileChange = (e) => {
                   )}
                     <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
                       <Clock className="h-4 w-4" style={{ color: organizationDetails?.brandColor || '#1e293b' }}/>
-                      <span className="text-sm text-gray-700 capitalize">{jobDetails.workType}</span>
+                      <span className="text-sm text-gray-700 capitalize">{jobDetails.workType?.toLowerCase() === 'onsite' ? 'In Office' : jobDetails.workType}</span>
                     </div>
                     <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
                       <Briefcase className="h-4 w-4" style={{ color: organizationDetails?.brandColor || '#1e293b' }}/>
