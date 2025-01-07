@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import LoadingState from '@/app/components/loadingState';
 import Header from './header';
+import PoweredByFooter from './PoweredByFooter';
 
 const OrganizationHome = ({ initialData }) => {
   const [organizationDetails] = useState(initialData.organizationDetails);
@@ -259,6 +260,7 @@ const OrganizationHome = ({ initialData }) => {
             ))}
           </div>
         )}
+        <PoweredByFooter/>
       </main>
     </div>
   );

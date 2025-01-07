@@ -16,6 +16,7 @@ import ApiService from '@/app/services/ApiService';
 import LoadingState from '@/app/components/loadingState';
 import Header from './header';
 import Link from 'next/link';
+import PoweredByFooter from './PoweredByFooter';
 
 const JobApplication = ({ initialData }) => {
   const router = useRouter();
@@ -794,6 +795,7 @@ const handleFileChange = (e) => {
             )}
           </div>
         </div>
+        <PoweredByFooter/>
       </main>
     </div>
   );
