@@ -9,7 +9,8 @@ import {
   Calendar, 
   ArrowLeft, 
   AlertCircle,
-  Check 
+  Check ,
+  Banknote
 } from 'lucide-react';
 import ApiService from '@/app/services/ApiService';
 import LoadingState from '@/app/components/loadingState';
@@ -332,6 +333,19 @@ const handleFileChange = (e) => {
                       <Briefcase className="h-4 w-4" style={{ color: organizationDetails?.brandColor || '#1e293b' }}/>
                       <span className="text-sm text-gray-700 capitalize">{jobDetails.employmentType}</span>
                     </div>
+                    {(jobDetails.salaryMin || jobDetails.salaryMax) && (
+                      <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
+                                                <Banknote className="h-4 w-4" style={{ color: organizationDetails?.brandColor || '#1e293b' }}/>
+                        <span className="text-sm text-gray-700">
+                          {jobDetails.salaryMin && jobDetails.salaryMax
+                            ? `${jobDetails.salaryMin.toLocaleString()}-${jobDetails.salaryMax.toLocaleString()} ${jobDetails.salaryCurrency}`
+                            : jobDetails.salaryMin
+                            ? `${jobDetails.salaryMin.toLocaleString()}+ ${jobDetails.salaryCurrency}`
+                            : `Up to ${jobDetails.salaryMax.toLocaleString()} ${jobDetails.salaryCurrency}`}
+                          {' '}/{' '}{jobDetails.salaryPeriod}
+                        </span>
+                      </div>
+                    )}
                     <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
                       <Calendar className="h-4 w-4" style={{ color: organizationDetails?.brandColor || '#1e293b' }}/>
                       <span className="text-sm text-gray-700">
