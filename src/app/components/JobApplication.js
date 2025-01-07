@@ -335,7 +335,7 @@ const handleFileChange = (e) => {
                     </div>
                     {(jobDetails.salaryMin || jobDetails.salaryMax) && (
                       <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
-                                                <Banknote className="h-4 w-4" style={{ color: organizationDetails?.brandColor || '#1e293b' }}/>
+                        <Banknote className="h-4 w-4" style={{ color: organizationDetails?.brandColor || '#1e293b' }}/>
                         <span className="text-sm text-gray-700">
                           {jobDetails.salaryMin && jobDetails.salaryMax
                             ? `${jobDetails.salaryMin.toLocaleString()}-${jobDetails.salaryMax.toLocaleString()} ${jobDetails.salaryCurrency}`
